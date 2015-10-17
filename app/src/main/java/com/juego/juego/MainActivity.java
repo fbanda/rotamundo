@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         Vec2 floorPos = floor.getPosition();
         c.drawRect((floorPos.x + floorShape.getVertex(0).x)*DRAW_RESOLUTION, (floorPos.y + floorShape.getVertex(0).y)*DRAW_RESOLUTION,
                 (floorPos.x + floorShape.getVertex(2).x)*DRAW_RESOLUTION, (floorPos.y + floorShape.getVertex(2).y)*DRAW_RESOLUTION, p);
-        p.setColor(Color.RED);
+        p.setColor(Color.YELLOW);
         CircleShape ballShape = ((CircleShape)ball.getFixtureList().getShape());
         Vec2 ballPos = ball.getPosition();
         c.drawCircle(ballPos.x*DRAW_RESOLUTION, ballPos.y*DRAW_RESOLUTION, ballShape.m_radius*DRAW_RESOLUTION, p);
