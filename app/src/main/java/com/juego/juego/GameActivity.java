@@ -2,10 +2,12 @@ package com.juego.juego;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 
 import com.juego.objects.Ball;
 import com.juego.objects.ChainWall;
+import com.juego.sensors.GyroscopeManager;
 
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.World;
@@ -15,13 +17,15 @@ import java.util.ArrayList;
 public class GameActivity extends BaseActivity {
 
     private World world;
-
+    private GyroscopeManager gyroManager;
     private ArrayList<ChainWall> walls;
     private Ball ball;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+        gyroManager = new GyroscopeManager((SensorManager)getSystemService(SENSOR_SERVICE), this);
+        gyroManager.toggleListener();
 
         Vec2 gravity = new Vec2(0f, 0f);
         world = new World(gravity);
@@ -68,14 +72,15 @@ public class GameActivity extends BaseActivity {
 
     @Override
     public void update(){
-        counter++;
+        /*counter++;
         if(counter >= 2*ActivityThread.FPS){
             gravityAngle += Math.PI/2;
             gravityAngle %= 2*Math.PI;
             counter = 0;
-        }
+        }*/
 
-        ball.applyRotatedGravity(gravityAngle);
+        //ball.applyRotatedGravity(gravityAngle);
+        ball.applyRotatedGravity(gyroManager.getScreenAngle());
         world.step(1f/ActivityThread.FPS, 6, 2);
     }
 

@@ -48,7 +48,7 @@ public class Ball extends DrawableBody {
         body.setLinearVelocity(velocity);
     }*/
 
-    public void applyRotatedGravity(float angle){
+    public void applyRotatedGravity(double angle){
         Vec2 force = new Vec2((float)(ROTATED_GRAVITY_IMPULSE*Math.cos(angle)), -(float)(ROTATED_GRAVITY_IMPULSE*Math.sin(angle)));
         body.applyLinearImpulse(force, body.getWorldCenter());
     }
