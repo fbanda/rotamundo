@@ -10,17 +10,18 @@ public class ActivityThread extends Thread {
     public static final int FPS = 30;
     public static final int SKIP_TICKS = 1000/FPS;
 
-    private MainActivity activity;
+    private BaseActivity activity;
     private boolean isRunning = true;
     private long nextGameTick;
 
-    public ActivityThread(MainActivity activity){
+    public ActivityThread(BaseActivity activity){
         this.activity = activity;
     }
 
     @Override
     public void run(){
         long sleepTime;
+        nextGameTick = SystemClock.uptimeMillis();
         while(isRunning){
             activity.draw();
             activity.update();

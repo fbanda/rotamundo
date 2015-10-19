@@ -32,7 +32,7 @@ public class GameCanvas extends SurfaceView implements SurfaceHolder.Callback {
     public void surfaceDestroyed(SurfaceHolder arg0) {
     }
 
-    public void draw(MainActivity activity){
+    public void draw(BaseActivity activity){
         Canvas c = holder.lockCanvas(null);
         if(c != null){
             activity.draw(c);
