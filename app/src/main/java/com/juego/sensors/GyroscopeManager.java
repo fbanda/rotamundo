@@ -28,8 +28,8 @@ public class GyroscopeManager implements SensorEventListener {
         if(sensorActive){
             sManager.unregisterListener(this);
         }else{
-            sManager.registerListener(this, magneto, SensorManager.SENSOR_DELAY_NORMAL);
-            sManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+            sManager.registerListener(this, magneto, SensorManager.SENSOR_DELAY_FASTEST);
+            sManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_FASTEST);
         }
     }
 

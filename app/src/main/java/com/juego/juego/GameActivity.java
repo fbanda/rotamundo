@@ -97,8 +97,8 @@ public class GameActivity extends BaseActivity {
         p.setColor(Ball.BALL_COLOR);
         ball.drawBody(c, p, scale);
 
-        p.setColor(Color.GRAY);
-        c.drawText(getGravityText(), screenWidth/2, screenHeight/2, p);
+        /*p.setColor(Color.GRAY);
+        c.drawText(getGravityText(), screenWidth/2, screenHeight/2, p);*/
     }
 
 }
