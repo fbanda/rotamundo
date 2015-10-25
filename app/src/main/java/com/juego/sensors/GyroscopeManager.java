@@ -31,7 +31,7 @@ public class GyroscopeManager implements SensorEventListener {
             sManager.unregisterListener(this);
             sensorActive = false;
         }else{
-            sManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_GAME);
+            sManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_UI);
             sensorActive = true;
         }
     }
