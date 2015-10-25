@@ -7,12 +7,15 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
 
+import org.jbox2d.common.Vec2;
+
 
 public class GyroscopeManager implements SensorEventListener {
     private SensorManager sManager;
     private Sensor magneto;
     private Sensor accelerometer;
-    private double azimut;
+    private Sensor orientationSensor;
+    private double angle;
     private boolean sensorActive;
     private Activity gameActivity;
 
@@ -20,21 +23,21 @@ public class GyroscopeManager implements SensorEventListener {
         this.sManager = sManager;
         this.gameActivity = gameActivity;
         sensorActive = false;
-        magneto = sManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         accelerometer = sManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
     }
 
     public void toggleListener(){
         if(sensorActive){
             sManager.unregisterListener(this);
+            sensorActive = false;
         }else{
-            sManager.registerListener(this, magneto, SensorManager.SENSOR_DELAY_FASTEST);
-            sManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_FASTEST);
+            sManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_GAME);
+            sensorActive = true;
         }
     }
 
     public double getScreenAngle(){
-        return azimut - Math.toRadians(45);
+        return angle;
     }
 
 
@@ -48,7 +51,7 @@ public class GyroscopeManager implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
+        /*if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
             mGravity = event.values.clone();
         if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)
             mGeomagnetic = event.values.clone();
@@ -62,6 +65,17 @@ public class GyroscopeManager implements SensorEventListener {
                 azimut = orientation[0]; // orientation contains: azimut, pitch and roll
                 Log.d("a", "" + Math.toDegrees(azimut));
             }
+        }*/
+        if(event.sensor.getType() == Sensor.TYPE_ACCELEROMETER){
+            float x =  event.values[0];
+            float y =  event.values[1];
+
+            angle = Math.atan2(y,x);
+            angle -= Math.PI/2;
+            angle += 2*Math.PI;
+            angle %= 2*Math.PI;
+
+
         }
     }
 

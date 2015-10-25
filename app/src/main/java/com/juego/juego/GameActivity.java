@@ -17,15 +17,15 @@ import java.util.ArrayList;
 public class GameActivity extends BaseActivity {
 
     private World world;
-    private GyroscopeManager gyroManager;
+    private GyroscopeManager sensorProvider;
     private ArrayList<ChainWall> walls;
     private Ball ball;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        gyroManager = new GyroscopeManager((SensorManager)getSystemService(SENSOR_SERVICE), this);
-        gyroManager.toggleListener();
+        sensorProvider = new GyroscopeManager((SensorManager)getSystemService(SENSOR_SERVICE),this);
+        sensorProvider.toggleListener();
 
         Vec2 gravity = new Vec2(0f, 0f);
         world = new World(gravity);
@@ -54,6 +54,7 @@ public class GameActivity extends BaseActivity {
         super.onRestart();
         ball.setPosition(new Vec2(15, 15));
         //ball.setLinearVelocity(new Vec2(8f, 0));
+        sensorProvider.toggleListener();
     }
 
     private int counter = 0;
@@ -71,6 +72,12 @@ public class GameActivity extends BaseActivity {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        sensorProvider.toggleListener();
+    }
+
+    @Override
     public void update(){
         /*counter++;
         if(counter >= 2*ActivityThread.FPS){
@@ -80,7 +87,8 @@ public class GameActivity extends BaseActivity {
         }*/
 
         //ball.applyRotatedGravity(gravityAngle);
-        ball.applyRotatedGravity(gyroManager.getScreenAngle());
+
+        ball.applyRotatedGravity(sensorProvider.getScreenAngle());
         world.step(1f/ActivityThread.FPS, 6, 2);
     }
 
@@ -96,9 +104,6 @@ public class GameActivity extends BaseActivity {
 
         p.setColor(Ball.BALL_COLOR);
         ball.drawBody(c, p, scale);
-
-        /*p.setColor(Color.GRAY);
-        c.drawText(getGravityText(), screenWidth/2, screenHeight/2, p);*/
     }
 
 }
