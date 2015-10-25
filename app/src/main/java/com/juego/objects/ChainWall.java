@@ -4,6 +4,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import com.juego.juego.BaseActivity;
+
 import org.jbox2d.collision.shapes.ChainShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
@@ -40,10 +42,11 @@ public class ChainWall extends DrawableBody {
     }
 
     @Override
-    public void drawBody(Canvas c, Paint p, float scale) {
+    public void drawBody(Canvas c, Paint p, float scale, float xOffset, float yOffset) {
         Vec2[] vertices = ((ChainShape)body.getFixtureList().getShape()).m_vertices;
         for (int i = 0, len = vertices.length; i < len - 1; i++) {
-            c.drawLine(vertices[i].x*scale, vertices[i].y*scale, vertices[i+1].x*scale, vertices[i+1].y*scale, p);
+            c.drawLine(BaseActivity.screenWidth/2 + (vertices[i].x + xOffset)*scale, BaseActivity.screenHeight/2 + (vertices[i].y+yOffset)*scale,
+                    BaseActivity.screenWidth/2 + (vertices[i+1].x+xOffset)*scale, BaseActivity.screenHeight/2 + (vertices[i+1].y+yOffset)*scale, p);
         }
     }
 }

@@ -15,8 +15,8 @@ public abstract class BaseActivity extends Activity {
     protected Paint p;
     protected float scale;
 
-    protected int screenWidth;
-    protected int screenHeight;
+    public static int screenWidth;
+    public static int screenHeight;
 
     private ActivityThread thread;
 

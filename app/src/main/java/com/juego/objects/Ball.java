@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.view.animation.AccelerateInterpolator;
 
 import com.juego.juego.ActivityThread;
+import com.juego.juego.BaseActivity;
 
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.common.Vec2;
@@ -19,7 +20,7 @@ public class Ball extends DrawableBody {
 
     public static final int BALL_COLOR = Color.RED;
 
-    public static final float ROTATED_GRAVITY_IMPULSE = 9.8f / ActivityThread.FPS;
+    public static final float ROTATED_GRAVITY_IMPULSE = 11.8f / ActivityThread.FPS;
 
     private Body body;
 
@@ -40,6 +41,10 @@ public class Ball extends DrawableBody {
         body.setUserData(this);
     }
 
+    public Vec2 getPosition(){
+        return body.getPosition();
+    }
+
     public void setPosition(Vec2 position){
         body.setTransform(position, 0f);
     }
@@ -53,12 +58,18 @@ public class Ball extends DrawableBody {
         body.applyLinearImpulse(force, body.getWorldCenter());
     }
 
+    public void drawBodyAt(Canvas c, Paint p, float scale, float x, float y){
+        float radius = body.getFixtureList().getShape().m_radius;
+        c.drawCircle(x, y, radius * scale, p);
+    }
+
     @Override
-    public void drawBody(Canvas c, Paint p, float scale) {
+    public void drawBody(Canvas c, Paint p, float scale, float xOff, float yOff) {
         float radius = body.getFixtureList().getShape().m_radius;
         Vec2 pos = body.getPosition();
         float x = pos.x;
         float y = pos.y;
-        c.drawCircle(x*scale, y*scale, radius*scale, p);
+        c.drawCircle(BaseActivity.screenWidth/2 + (x + xOff)*scale,
+                BaseActivity.screenHeight/2 + (y + yOff)*scale, radius*scale, p);
     }
 }

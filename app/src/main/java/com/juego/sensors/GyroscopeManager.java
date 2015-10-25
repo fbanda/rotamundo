@@ -12,9 +12,7 @@ import org.jbox2d.common.Vec2;
 
 public class GyroscopeManager implements SensorEventListener {
     private SensorManager sManager;
-    private Sensor magneto;
     private Sensor accelerometer;
-    private Sensor orientationSensor;
     private double angle;
     private boolean sensorActive;
     private Activity gameActivity;
