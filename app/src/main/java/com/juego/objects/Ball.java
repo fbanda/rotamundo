@@ -3,7 +3,6 @@ package com.juego.objects;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.view.animation.AccelerateInterpolator;
 
 import com.juego.juego.ActivityThread;
 import com.juego.juego.BaseActivity;
@@ -20,7 +19,8 @@ public class Ball extends DrawableBody {
 
     public static final int BALL_COLOR = Color.RED;
 
-    public static final float ROTATED_GRAVITY_IMPULSE = 11.8f / ActivityThread.FPS;
+    public static final float ROTATED_GRAVITY_IMPULSE = 15f / ActivityThread.FPS;
+    public static final float MAX_SPEED = 35f;
 
     private Body body;
 
@@ -56,6 +56,13 @@ public class Ball extends DrawableBody {
     public void applyRotatedGravity(double angle){
         Vec2 force = new Vec2((float)(ROTATED_GRAVITY_IMPULSE*Math.cos(angle)), -(float)(ROTATED_GRAVITY_IMPULSE*Math.sin(angle)));
         body.applyLinearImpulse(force, body.getWorldCenter());
+
+        //Max speed
+        Vec2 velocity = body.getLinearVelocity();
+        float speed = velocity.length();
+        if(speed > MAX_SPEED){
+            velocity.mulLocal(MAX_SPEED / speed);
+        }
     }
 
     public void drawBodyAt(Canvas c, Paint p, float scale, float x, float y){

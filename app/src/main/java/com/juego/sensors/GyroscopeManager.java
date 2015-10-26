@@ -15,11 +15,9 @@ public class GyroscopeManager implements SensorEventListener {
     private Sensor accelerometer;
     private double angle;
     private boolean sensorActive;
-    private Activity gameActivity;
 
-    public GyroscopeManager(SensorManager sManager, Activity gameActivity){
+    public GyroscopeManager(SensorManager sManager){
         this.sManager = sManager;
-        this.gameActivity = gameActivity;
         sensorActive = false;
         accelerometer = sManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
     }
@@ -65,15 +63,13 @@ public class GyroscopeManager implements SensorEventListener {
             }
         }*/
         if(event.sensor.getType() == Sensor.TYPE_ACCELEROMETER){
-            float x =  event.values[0];
-            float y =  event.values[1];
+            float x = event.values[0];
+            float y = event.values[1];
 
-            angle = Math.atan2(y,x);
-            angle -= Math.PI/2;
-            angle += 2*Math.PI;
-            angle %= 2*Math.PI;
-
-
+            angle = Math.atan2(y, x);
+            angle -= Math.PI / 2;
+            angle += 2 * Math.PI;
+            angle %= 2 * Math.PI;
         }
     }
 
