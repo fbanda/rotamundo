@@ -19,8 +19,8 @@ public class Ball extends DrawableBody {
 
     public static final int BALL_COLOR = Color.RED;
 
-    public static final float ROTATED_GRAVITY_IMPULSE = 15f / ActivityThread.FPS;
-    public static final float MAX_SPEED = 35f;
+    public static final float ROTATED_GRAVITY_IMPULSE = 30f / ActivityThread.FPS;
+    public static final float MAX_SPEED = 40f;
 
     private Body body;
 
