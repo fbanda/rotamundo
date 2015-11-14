@@ -8,6 +8,7 @@ import android.os.Bundle;
 import com.juego.Lector;
 import com.juego.objects.Ball;
 import com.juego.objects.ChainWall;
+import com.juego.objects.Mine;
 import com.juego.sensors.GyroscopeManager;
 
 import org.jbox2d.common.Vec2;
@@ -21,12 +22,18 @@ public class GameActivity extends BaseActivity {
     private GyroscopeManager sensorProvider;
     private ArrayList<ChainWall> walls;
     private Ball ball;
+    private Mine mine;
 
     public static final float ANGLE_OFFSET = 5f;
     private float cameraXOffset;
     private float cameraYOffset;
     private float angleXOffset;
     private float angleYOffset;
+
+    @Override
+    protected int[] getNeededBitmaps(){
+        return new int[]{R.drawable.ball_kirby, R.drawable.mine_gordo};
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -41,6 +48,8 @@ public class GameActivity extends BaseActivity {
         for(Vec2[] vertices : wallArray){
             walls.add(new ChainWall(world, vertices, true));
         }
+
+        mine = new Mine(world, 15, 30);
 
         ball = new Ball(world, 15, 15);
     }
@@ -73,8 +82,9 @@ public class GameActivity extends BaseActivity {
         Vec2 position = ball.getPosition();
         cameraXOffset = -position.x;
         cameraYOffset = -position.y;
-        angleXOffset = ANGLE_OFFSET*(float)Math.cos(screenAngle);
-        angleYOffset = -ANGLE_OFFSET*(float)Math.sin(screenAngle);
+        angleXOffset = 0;//ANGLE_OFFSET*(float)Math.cos(screenAngle);
+        angleYOffset = 0;//-ANGLE_OFFSET*(float)Math.sin(screenAngle);
+
     }
 
     @Override
@@ -84,14 +94,16 @@ public class GameActivity extends BaseActivity {
 
         p.setColor(ChainWall.WALL_COLOR);
         for(ChainWall wall : walls){
-            wall.draw(c, p, scale, cameraXOffset + angleXOffset, cameraYOffset + angleYOffset);
+            wall.draw(res, c, p, scale, cameraXOffset + angleXOffset, cameraYOffset + angleYOffset);
         }
 
         /*p.setColor(Color.BLACK);
         c.drawCircle(screenWidth/2, screenHeight/2, 3*scale, p);*/
 
         p.setColor(Ball.BALL_COLOR);
-        ball.drawBodyAt(c, p, scale, screenWidth/2 + angleXOffset*scale, screenHeight/2 + angleYOffset*scale);
+        ball.drawBodyAt(res, c, p, scale, screenWidth / 2 + angleXOffset * scale, screenHeight / 2 + angleYOffset * scale);
+
+        mine.draw(res, c, p, scale, cameraXOffset + angleXOffset, cameraYOffset + angleYOffset);
     }
 
 }

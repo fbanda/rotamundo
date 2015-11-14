@@ -1,10 +1,10 @@
 package com.juego.objects;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 
-import com.juego.juego.BaseActivity;
 import com.juego.juego.Res;
 
 import org.jbox2d.collision.shapes.ChainShape;
@@ -16,23 +16,18 @@ import org.jbox2d.dynamics.FixtureDef;
 import org.jbox2d.dynamics.World;
 
 /**
- * Created by Fernando on 18/10/2015.
+ * Created by Fernando on 14/11/2015.
  */
-public class ChainWall extends DrawableBody {
+public class SpikeRow extends DrawableBody {
 
-    public static final int WALL_COLOR = Color.BLUE;
-
+    private Bitmap bitmap;
     private Body body;
 
-    public ChainWall(World world, Vec2[] points, boolean loop){
+    public SpikeRow(World world, Vec2[] rect, int orientation){
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyType.STATIC;
         ChainShape chainShape = new ChainShape();
-        if(loop){
-            chainShape.createLoop(points, points.length);
-        }else{
-            chainShape.createChain(points, points.length);
-        }
+        chainShape.createLoop(rect, rect.length);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = chainShape;
         fixtureDef.friction = 0.05f;
@@ -40,14 +35,13 @@ public class ChainWall extends DrawableBody {
         body.createFixture(fixtureDef);
 
         body.setUserData(this);
+
+        bitmap = Bitmap.createBitmap(0, 0, Bitmap.Config.ARGB_8888);
     }
 
     @Override
     public void drawBody(Res res, Canvas c, Paint p, float scale, float xOffset, float yOffset) {
-        Vec2[] vertices = ((ChainShape)body.getFixtureList().getShape()).m_vertices;
-        for (int i = 0, len = vertices.length; i < len - 1; i++) {
-            c.drawLine(BaseActivity.screenWidth/2 + (vertices[i].x + xOffset)*scale, BaseActivity.screenHeight/2 + (vertices[i].y+yOffset)*scale,
-                    BaseActivity.screenWidth/2 + (vertices[i+1].x+xOffset)*scale, BaseActivity.screenHeight/2 + (vertices[i+1].y+yOffset)*scale, p);
-        }
+
     }
+
 }

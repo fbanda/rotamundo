@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.media.AudioManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.WindowManager;
@@ -19,6 +20,7 @@ public abstract class BaseActivity extends Activity {
     public static int screenHeight;
 
     private ActivityThread thread;
+    protected Res res;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,12 +32,12 @@ public abstract class BaseActivity extends Activity {
         canvas = (GameCanvas)findViewById(R.id.main_canvas);
 
         Display display = getWindowManager().getDefaultDisplay();
-        try{
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2){
             Point point = new Point();
             display.getSize(point);
             screenWidth = point.x;
             screenHeight = point.y;
-        }catch(NoSuchMethodError e){
+        }else{
             screenWidth = display.getWidth();
             screenHeight = display.getHeight();
         }
@@ -46,6 +48,8 @@ public abstract class BaseActivity extends Activity {
         p.setTextAlign(Paint.Align.CENTER);
 
         scale = 10f * screenHeight / 720;
+
+        res = new Res(getResources());
     }
 
     @Override
@@ -53,12 +57,18 @@ public abstract class BaseActivity extends Activity {
         super.onResume();
         thread = new ActivityThread(this);
         thread.start();
+
+        for(int bitmap : getNeededBitmaps()){
+            res.bitmap(bitmap);
+        }
     }
 
     @Override
     public void onPause(){
         super.onPause();
         thread.stopThread();
+
+        res.freeAllResources();
     }
 
     public final void draw(){
@@ -70,6 +80,10 @@ public abstract class BaseActivity extends Activity {
     public abstract void update();
 
     public abstract void draw(Canvas c);
+
+    protected int[] getNeededBitmaps(){
+        return new int[0];
+    }
 
 
 }
