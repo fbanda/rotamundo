@@ -1,19 +1,16 @@
 package com.juego.sensors;
 
-import android.app.Activity;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.util.Log;
-
-import org.jbox2d.common.Vec2;
-
 
 public class GyroscopeManager implements SensorEventListener {
     private SensorManager sManager;
     private Sensor accelerometer;
     private double angle;
+    private static final double threshold = 8;
+    private boolean pushedButton;
     private boolean sensorActive;
 
     public GyroscopeManager(SensorManager sManager){
@@ -36,6 +33,8 @@ public class GyroscopeManager implements SensorEventListener {
         return angle;
     }
 
+    public boolean pushedButton() {return pushedButton;}
+    public void resetButtonState() {pushedButton = false;}
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
@@ -47,24 +46,12 @@ public class GyroscopeManager implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        /*if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
-            mGravity = event.values.clone();
-        if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)
-            mGeomagnetic = event.values.clone();
-        if (mGravity != null && mGeomagnetic != null) {
-            float R[] = new float[9];
-            float I[] = new float[9];
-            boolean success = SensorManager.getRotationMatrix(R, I, mGravity, mGeomagnetic);
-            if (success) {
-                float orientation[] = new float[3];
-                SensorManager.getOrientation(R, orientation);
-                azimut = orientation[0]; // orientation contains: azimut, pitch and roll
-                Log.d("a", "" + Math.toDegrees(azimut));
-            }
-        }*/
+
         if(event.sensor.getType() == Sensor.TYPE_ACCELEROMETER){
             float x = event.values[0];
             float y = event.values[1];
+            float z = event.values[2];
+            if(z>threshold) pushedButton = true;
 
             angle = Math.atan2(y, x);
             angle -= Math.PI / 2;

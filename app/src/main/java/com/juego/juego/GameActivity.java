@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.juego.Lector;
 import com.juego.objects.Ball;
@@ -68,6 +69,12 @@ public class GameActivity extends BaseActivity {
     @Override
     public void update(){
         double screenAngle = sensorProvider.getScreenAngle();
+
+        if(sensorProvider.pushedButton()){
+            Log.d("E", "WORKED");
+            sensorProvider.resetButtonState();
+        }
+
 
         ball.applyRotatedGravity(screenAngle);
         world.step(1f / ActivityThread.FPS, 6, 2);
