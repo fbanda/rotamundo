@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.juego.Lector;
 import com.juego.objects.Ball;
@@ -23,6 +24,8 @@ public class GameActivity extends BaseActivity {
     private ArrayList<ChainWall> walls;
     private Ball ball;
     private Mine mine;
+
+    public static final boolean CAMERA = false;
 
     public static final float ANGLE_OFFSET = 5f;
     private float cameraXOffset;
@@ -76,15 +79,25 @@ public class GameActivity extends BaseActivity {
     public void update(){
         double screenAngle = sensorProvider.getScreenAngle();
 
+        if(sensorProvider.pushedButton()){
+            Log.d("E", "WORKED");
+            sensorProvider.resetButtonState();
+        }
+
+
         ball.applyRotatedGravity(screenAngle);
         world.step(1f / ActivityThread.FPS, 6, 2);
 
         Vec2 position = ball.getPosition();
         cameraXOffset = -position.x;
         cameraYOffset = -position.y;
-        angleXOffset = 0;//ANGLE_OFFSET*(float)Math.cos(screenAngle);
-        angleYOffset = 0;//-ANGLE_OFFSET*(float)Math.sin(screenAngle);
-
+        if(CAMERA) {
+            angleXOffset = ANGLE_OFFSET * (float) Math.cos(screenAngle);
+            angleYOffset = -ANGLE_OFFSET * (float) Math.sin(screenAngle);
+        }else{
+            angleXOffset = 0;
+            angleYOffset = 0;
+        }
     }
 
     @Override
