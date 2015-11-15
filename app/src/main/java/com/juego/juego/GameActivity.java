@@ -1,7 +1,9 @@
 package com.juego.juego;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,10 +32,37 @@ public class GameActivity extends BaseActivity {
     public static final boolean CAMERA = false;
 
     public static final float ANGLE_OFFSET = 5f;
+    private static final int NUM_ROTATED_IMAGES = 36;
     private float cameraXOffset;
     private float cameraYOffset;
     private float angleXOffset;
     private float angleYOffset;
+    private ArrayList<Bitmap> rotatedKirbys;
+
+
+    public ArrayList<Bitmap> generateBitmaps (int number) {
+        ArrayList<Bitmap> kirbys = new ArrayList<>();
+        float angle = 360/number;
+        float angle2 = angle;
+        kirbys.add(res.bitmap(R.drawable.ball_kirby));
+
+        while (true){
+            if (angle2 >= 360) break;
+            else{
+                kirbys.add(rotateBitmap(res.bitmap(R.drawable.ball_kirby), -angle2));
+                angle2 = angle2 + angle;
+            }
+        }
+        return kirbys;
+    }
+
+    public static Bitmap rotateBitmap(Bitmap source, float angle)
+    {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        //return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+        return Bitmap.createBitmap(source, 0, 0, 60, 60, matrix, true);
+    }
 
     @Override
     protected int[] getNeededBitmaps(){
@@ -44,13 +73,14 @@ public class GameActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         sensorProvider = new GyroscopeManager((SensorManager)getSystemService(SENSOR_SERVICE));
+        Lector lector = new Lector();
+        lector.Leer(getAssets(), "testVec2.txt");
 
         Vec2 gravity = new Vec2(0f, 0f);
         world = new World(gravity);
 
         walls = new ArrayList<>();
-        ArrayList<Vec2[]> wallArray = Lector.Leer(getAssets(), "testVec2.txt");
-        for(Vec2[] vertices : wallArray){
+        for(Vec2[] vertices : lector.getWalls()){
             walls.add(new ChainWall(world, vertices, true));
         }
 
@@ -61,6 +91,9 @@ public class GameActivity extends BaseActivity {
         spikeRow = new SpikeRow(res, world,
                 new Vec2[]{new Vec2(0, 0), new Vec2(60, 0), new Vec2(60, 8.2f), new Vec2(0, 8.2f)},
                 2, BaseActivity.drawScale, p);
+
+        rotatedKirbys = generateBitmaps(NUM_ROTATED_IMAGES);
+
     }
 
     @Override
@@ -109,6 +142,9 @@ public class GameActivity extends BaseActivity {
     public void draw(Canvas c) {
         p.setColor(Color.WHITE);
         c.drawRect(0, 0, screenWidth, screenHeight, p);
+        double screenAngle = Math.toDegrees(sensorProvider.getScreenAngle()) + 90;
+        int index = (int)(Math.round(screenAngle / (360/NUM_ROTATED_IMAGES)));
+        index = index % NUM_ROTATED_IMAGES;
 
         p.setColor(ChainWall.WALL_COLOR);
         for(ChainWall wall : walls){
@@ -119,9 +155,7 @@ public class GameActivity extends BaseActivity {
         c.drawCircle(screenWidth/2, screenHeight/2, 3*drawScale, p);*/
 
         p.setColor(Ball.BALL_COLOR);
-        ball.drawBodyAt(res, c, p, BaseActivity.getCombinedScale(),
-                screenWidth / 2 + angleXOffset * BaseActivity.getCombinedScale(),
-                screenHeight / 2 + angleYOffset * BaseActivity.getCombinedScale());
+        ball.drawBodyAt(rotatedKirbys.get(index), c, p, BaseActivity.getCombinedScale(), screenWidth / 2 + angleXOffset * BaseActivity.getCombinedScale(), screenHeight / 2 + angleYOffset * BaseActivity.getCombinedScale());
 
         mine.draw(res, c, p, BaseActivity.getCombinedScale(), cameraXOffset + angleXOffset, cameraYOffset + angleYOffset);
 
