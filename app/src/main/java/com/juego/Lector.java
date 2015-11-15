@@ -3,6 +3,7 @@ import org.jbox2d.common.Vec2;
 import android.content.res.AssetManager;
 
 import com.juego.objects.scanner.Button;
+import com.juego.objects.scanner.ForceField;
 import com.juego.objects.scanner.Spike;
 
 import java.io.BufferedReader;
@@ -18,12 +19,14 @@ public class Lector {
     ArrayList<Vec2> mines;
     ArrayList<Button> buttons;
     ArrayList<Spike> spikes;
+    ArrayList<ForceField> fields;
 
     public Lector(){
         wallVertices = new ArrayList<>();
         mines = new ArrayList<>();
         buttons = new ArrayList<>();
         spikes = new ArrayList<>();
+        fields = new ArrayList<>();
     }
 
     public ArrayList<Vec2[]> getWalls(){
@@ -42,6 +45,10 @@ public class Lector {
         return spikes;
     }
 
+    public ArrayList<ForceField> getForceFields(){
+        return fields;
+    }
+
     public void Leer(AssetManager assetManager, String path){
         try {
             InputStreamReader in = new InputStreamReader(assetManager.open(path));
@@ -54,6 +61,7 @@ public class Lector {
                 if(strLine.contains("mine")) readMine(strAux[1]);
                 if(strLine.contains("btn")) readButton(strAux);
                 if(strLine.contains("spike")) readSpike(strAux);
+                if(strLine.contains("field")) readField(strAux);
             }
 
         } catch (IOException e) {
@@ -94,6 +102,14 @@ public class Lector {
                 Integer.parseInt(verts[3]));
 
         spikes.add(spike);
+    }
+
+    private void readField(String[] verts){
+        String[] strNumbersAux = verts[1].split(",");
+
+        ForceField field = new ForceField(Float.parseFloat(strNumbersAux[0]), Float.parseFloat(strNumbersAux[1]), Integer.parseInt(verts[2]));
+
+        fields.add(field);
     }
 
 }
