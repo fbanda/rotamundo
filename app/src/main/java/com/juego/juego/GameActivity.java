@@ -23,6 +23,7 @@ public class GameActivity extends BaseActivity {
 
     private World world;
     private GyroscopeManager sensorProvider;
+    private Lector lector;
     private ArrayList<ChainWall> walls;
     private Ball ball;
     private Mine mine;
@@ -67,13 +68,14 @@ public class GameActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         sensorProvider = new GyroscopeManager((SensorManager)getSystemService(SENSOR_SERVICE));
+        lector = new Lector();
+        lector.Leer(getAssets(), "testVec2.txt");
 
         Vec2 gravity = new Vec2(0f, 0f);
         world = new World(gravity);
 
         walls = new ArrayList<>();
-        ArrayList<Vec2[]> wallArray = Lector.Leer(getAssets(), "testVec2.txt");
-        for(Vec2[] vertices : wallArray){
+        for(Vec2[] vertices : lector.getWalls()){
             walls.add(new ChainWall(world, vertices, true));
         }
 
