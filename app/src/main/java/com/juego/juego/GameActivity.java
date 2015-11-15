@@ -1,7 +1,9 @@
 package com.juego.juego;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,6 +35,29 @@ public class GameActivity extends BaseActivity {
     private float angleXOffset;
     private float angleYOffset;
 
+
+    public ArrayList<Bitmap> generateBitmaps (int number) {
+        ArrayList<Bitmap> kirbys = new ArrayList<>();
+        float angle = 360/number;
+        float angle2 = angle;
+        while (true){
+            if (angle2 >= 360) break;
+            else{
+                kirbys.add(rotateBitmap(res.bitmap(R.drawable.ball_kirby), angle2));
+                angle2 = angle2 + angle;
+            }
+        }
+        return kirbys;
+    }
+
+    public static Bitmap rotateBitmap(Bitmap source, float angle)
+    {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        //return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+        return Bitmap.createBitmap(source, 0, 0, 60, 60, matrix, true);
+    }
+
     @Override
     protected int[] getNeededBitmaps(){
         return new int[]{R.drawable.ball_kirby, R.drawable.mine_gordo};
@@ -55,6 +80,9 @@ public class GameActivity extends BaseActivity {
         mine = new Mine(world, 15, 30);
 
         ball = new Ball(world, 15, 15);
+
+        ArrayList<Bitmap> rotatedKirbys = generateBitmaps(16);
+
     }
 
     @Override
