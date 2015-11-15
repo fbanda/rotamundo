@@ -42,11 +42,11 @@ public class SpikeRow extends DrawableBody {
 
         int width, height;
         if(orientation == 0 || orientation == 2){
-            width = Math.round(10*(rect[2].x - rect[0].x));
+            width = Math.round(BaseActivity.BOX_2D_SCALE*(rect[2].x - rect[0].x));
             height = 82;
         }else{
             width = 82;
-            height = Math.round(10 * (rect[2].y - rect[0].y));
+            height = Math.round(BaseActivity.BOX_2D_SCALE * (rect[2].y - rect[0].y));
         }
         bitmap = Bitmap.createBitmap(Math.round(width*scale), Math.round(height*scale), Bitmap.Config.ARGB_8888);
         leftTop = rect[0];
@@ -81,11 +81,11 @@ public class SpikeRow extends DrawableBody {
         if(orientation % 2 == 0){
             xoff = 60;
             yoff = 0;
-            numberOfSpikes = (int)Math.ceil(bitmap.getWidth() / 60 / scale);
+            numberOfSpikes = (int)Math.ceil(bitmap.getWidth() / 60 / scale) + 1;
         }else{
             xoff = 0;
             yoff = 82;
-            numberOfSpikes = (int)Math.ceil(bitmap.getHeight() / 82 / scale);
+            numberOfSpikes = (int)Math.ceil(bitmap.getHeight() / 82 / scale) + 1;
         }
         Canvas c = new Canvas(bitmap);
         for(int i=0; i<numberOfSpikes; i++){

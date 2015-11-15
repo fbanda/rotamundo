@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.juego.Lector;
 import com.juego.objects.Ball;
@@ -26,19 +25,22 @@ public class GameActivity extends BaseActivity {
     private GyroscopeManager sensorProvider;
     private ArrayList<ChainWall> walls;
     private Ball ball;
+
+    //Temporal
     private Mine mine;
     private SpikeRow spikeRow;
 
     public static final boolean CAMERA = false;
 
     public static final float ANGLE_OFFSET = 5f;
-    private static final int NUM_ROTATED_IMAGES = 36;
     private float cameraXOffset;
     private float cameraYOffset;
     private float angleXOffset;
     private float angleYOffset;
-    private ArrayList<Bitmap> rotatedKirbys;
 
+    /* Rotar */
+    private static final int NUM_ROTATED_IMAGES = 36;
+    private ArrayList<Bitmap> rotatedKirbys;
 
     public ArrayList<Bitmap> generateBitmaps (int number) {
         ArrayList<Bitmap> kirbys = new ArrayList<>();
@@ -46,12 +48,9 @@ public class GameActivity extends BaseActivity {
         float angle2 = angle;
         kirbys.add(res.bitmap(R.drawable.ball_kirby));
 
-        while (true){
-            if (angle2 >= 360) break;
-            else{
-                kirbys.add(rotateBitmap(res.bitmap(R.drawable.ball_kirby), -angle2));
-                angle2 = angle2 + angle;
-            }
+        while (angle2 < 360){
+            kirbys.add(rotateBitmap(res.bitmap(R.drawable.ball_kirby), -angle2));
+            angle2 = angle2 + angle;
         }
         return kirbys;
     }
@@ -61,8 +60,9 @@ public class GameActivity extends BaseActivity {
         Matrix matrix = new Matrix();
         matrix.postRotate(angle);
         //return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
-        return Bitmap.createBitmap(source, 0, 0, 60, 60, matrix, true);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
     }
+    /**/
 
     @Override
     protected int[] getNeededBitmaps(){
