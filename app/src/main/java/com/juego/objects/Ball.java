@@ -6,6 +6,8 @@ import android.graphics.Paint;
 
 import com.juego.juego.ActivityThread;
 import com.juego.juego.BaseActivity;
+import com.juego.juego.R;
+import com.juego.juego.Res;
 
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.common.Vec2;
@@ -19,8 +21,10 @@ public class Ball extends DrawableBody {
 
     public static final int BALL_COLOR = Color.RED;
 
-    public static final float ROTATED_GRAVITY_IMPULSE = 30f / ActivityThread.FPS;
-    public static final float MAX_SPEED = 40f;
+    public static final float ROTATED_GRAVITY_IMPULSE = 15f / ActivityThread.FPS;
+    public static final float MAX_SPEED = 35f;
+    public static final float BALL_DRAW_RADIUS = 3;
+    public static final float BALL_COLLISION_RADIUS = 3;
 
     private Body body;
 
@@ -30,7 +34,7 @@ public class Ball extends DrawableBody {
         bodyDef.type = BodyType.DYNAMIC;
         bodyDef.fixedRotation = true;
         CircleShape cShape = new CircleShape();
-        cShape.m_radius = 3;
+        cShape.m_radius = BALL_COLLISION_RADIUS;
         FixtureDef fix2 = new FixtureDef();
         fix2.shape = cShape;
         fix2.friction = 0.05f;
@@ -65,18 +69,16 @@ public class Ball extends DrawableBody {
         }
     }
 
-    public void drawBodyAt(Canvas c, Paint p, float scale, float x, float y){
-        float radius = body.getFixtureList().getShape().m_radius;
-        c.drawCircle(x, y, radius * scale, p);
+    public void drawBodyAt(Res res, Canvas c, Paint p, float scale, float x, float y){
+        c.drawBitmap(res.bitmap(R.drawable.ball_kirby), x - BALL_DRAW_RADIUS * scale, y - BALL_DRAW_RADIUS * scale, p);
     }
 
     @Override
-    public void drawBody(Canvas c, Paint p, float scale, float xOff, float yOff) {
-        float radius = body.getFixtureList().getShape().m_radius;
+    protected void drawBody(Res res, Canvas c, Paint p, float scale, float xOff, float yOff) {
         Vec2 pos = body.getPosition();
         float x = pos.x;
         float y = pos.y;
-        c.drawCircle(BaseActivity.screenWidth/2 + (x + xOff)*scale,
-                BaseActivity.screenHeight/2 + (y + yOff)*scale, radius*scale, p);
+        c.drawBitmap(res.bitmap(R.drawable.ball_kirby), BaseActivity.screenWidth/2 + (x + xOff - BALL_DRAW_RADIUS)*scale,
+                BaseActivity.screenHeight/2 + (y + yOff - BALL_DRAW_RADIUS)*scale, p);
     }
 }
