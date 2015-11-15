@@ -20,8 +20,6 @@ import org.jbox2d.dynamics.World;
 
 public class Ball extends DrawableBody {
 
-    public static final int BALL_COLOR = Color.RED;
-
     public static final float ROTATED_GRAVITY_IMPULSE = 15f / ActivityThread.FPS;
     public static final float MAX_SPEED = 35f;
     public static final float BALL_DRAW_RADIUS = 3;

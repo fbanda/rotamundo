@@ -12,6 +12,7 @@ import com.juego.objects.Ball;
 import com.juego.objects.ChainWall;
 import com.juego.objects.Mine;
 import com.juego.objects.SpikeRow;
+import com.juego.objects.scanner.Spike;
 import com.juego.sensors.GyroscopeManager;
 
 import org.jbox2d.common.Vec2;
@@ -23,16 +24,17 @@ public class GameActivity extends BaseActivity {
 
     private World world;
     private GyroscopeManager sensorProvider;
+    private double lastAngle = -1;
+
     private ArrayList<ChainWall> walls;
+    private ArrayList<Mine> mines;
+    private ArrayList<SpikeRow> spikeRows;
     private Ball ball;
 
-    //Temporal
-    private Mine mine;
-    private SpikeRow spikeRow;
+    public static final boolean CAMERA = true;
+    public static final double ANGLE_STEP = Math.toRadians(8.0);
 
-    public static final boolean CAMERA = false;
-
-    public static final float ANGLE_OFFSET = 5f;
+    public static final float ANGLE_OFFSET = 8f;
     private float cameraXOffset;
     private float cameraYOffset;
     private float angleXOffset;
@@ -46,10 +48,19 @@ public class GameActivity extends BaseActivity {
         ArrayList<Bitmap> kirbys = new ArrayList<>();
         float angle = 360/number;
         float angle2 = angle;
-        kirbys.add(res.bitmap(R.drawable.ball_kirby));
+        Bitmap originalKirby = res.bitmap(R.drawable.ball_kirby);
+        kirbys.add(originalKirby);
 
         while (angle2 < 360){
-            kirbys.add(rotateBitmap(res.bitmap(R.drawable.ball_kirby), -angle2));
+            Bitmap rotatedWithMargin = rotateBitmap(originalKirby, -angle2);
+            Bitmap rotatedWithoutMargin = Bitmap.createBitmap(originalKirby.getWidth(), originalKirby.getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas c = new Canvas(rotatedWithoutMargin);
+            c.drawBitmap(rotatedWithMargin,
+                    (rotatedWithoutMargin.getWidth() - rotatedWithMargin.getWidth())/2,
+                    (rotatedWithoutMargin.getHeight() - rotatedWithMargin.getHeight())/2, p);
+            rotatedWithMargin.recycle();
+
+            kirbys.add(rotatedWithoutMargin);
             angle2 = angle2 + angle;
         }
         return kirbys;
@@ -59,7 +70,6 @@ public class GameActivity extends BaseActivity {
     {
         Matrix matrix = new Matrix();
         matrix.postRotate(angle);
-        //return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
         return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
     }
     /**/
@@ -73,6 +83,12 @@ public class GameActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         sensorProvider = new GyroscopeManager((SensorManager)getSystemService(SENSOR_SERVICE));
+
+        //Crear bitmaps rotados
+        rotatedKirbys = generateBitmaps(NUM_ROTATED_IMAGES);
+
+        //Inicializar el nivel
+
         Lector lector = new Lector();
         lector.Leer(getAssets(), "testVec2.txt");
 
@@ -83,16 +99,16 @@ public class GameActivity extends BaseActivity {
         for(Vec2[] vertices : lector.getWalls()){
             walls.add(new ChainWall(world, vertices, true));
         }
-
-        mine = new Mine(world, 15, 30);
+        mines = new ArrayList<>();
+        for(Vec2 vertex : lector.getMines()){
+            mines.add(new Mine(world, vertex.x, vertex.y));
+        }
+        spikeRows = new ArrayList<>();
+        for(Spike spike : lector.getSpikes()){
+            spikeRows.add(new SpikeRow(res, world, spike.getRect(), spike.orientation, BaseActivity.drawScale, p));
+        }
 
         ball = new Ball(world, 15, 15);
-
-        spikeRow = new SpikeRow(res, world,
-                new Vec2[]{new Vec2(0, 0), new Vec2(60, 0), new Vec2(60, 8.2f), new Vec2(0, 8.2f)},
-                2, BaseActivity.drawScale, p);
-
-        rotatedKirbys = generateBitmaps(NUM_ROTATED_IMAGES);
 
     }
 
@@ -114,24 +130,47 @@ public class GameActivity extends BaseActivity {
         sensorProvider.toggleListener();
     }
 
+    public void updateAngle(double screenAngle){
+        if(lastAngle < 0){
+            lastAngle = screenAngle;
+        }else if(lastAngle != screenAngle){
+            if((screenAngle > lastAngle && screenAngle - lastAngle < Math.PI)
+                    || (screenAngle < lastAngle && lastAngle - screenAngle > Math.PI)){
+                double newAngle = (lastAngle + ANGLE_STEP) % (2*Math.PI);
+                if(newAngle < Math.PI/2 && lastAngle > Math.PI*3/2){
+                    lastAngle = screenAngle; //Passed to over 360°
+                }else {
+                    lastAngle = Math.min(screenAngle, newAngle);
+                }
+            }else{
+                double newAngle = (lastAngle - ANGLE_STEP + 2*Math.PI) % (2*Math.PI);
+                if(newAngle > Math.PI*3/2 && lastAngle < Math.PI/2){
+                    lastAngle = screenAngle; //Passed to below 0°
+                }else {
+                    lastAngle = Math.max(screenAngle, newAngle);
+                }
+            }
+        }
+    }
+
     @Override
     public void update(){
         double screenAngle = sensorProvider.getScreenAngle();
+        updateAngle(screenAngle);
 
         if(sensorProvider.pushedButton()){
             sensorProvider.resetButtonState();
         }
 
-
-        ball.applyRotatedGravity(screenAngle);
+        ball.applyRotatedGravity(lastAngle);
         world.step(1f / ActivityThread.FPS, 6, 2);
 
         Vec2 position = ball.getPosition();
         cameraXOffset = -position.x;
         cameraYOffset = -position.y;
         if(CAMERA) {
-            angleXOffset = ANGLE_OFFSET * (float) Math.cos(screenAngle);
-            angleYOffset = -ANGLE_OFFSET * (float) Math.sin(screenAngle);
+            angleXOffset = ANGLE_OFFSET * (float) Math.cos(lastAngle);
+            angleYOffset = -ANGLE_OFFSET * (float) Math.sin(lastAngle);
         }else{
             angleXOffset = 0;
             angleYOffset = 0;
@@ -142,7 +181,7 @@ public class GameActivity extends BaseActivity {
     public void draw(Canvas c) {
         p.setColor(Color.WHITE);
         c.drawRect(0, 0, screenWidth, screenHeight, p);
-        double screenAngle = Math.toDegrees(sensorProvider.getScreenAngle()) + 90;
+        double screenAngle = Math.toDegrees(lastAngle) + 90;
         int index = (int)(Math.round(screenAngle / (360/NUM_ROTATED_IMAGES)));
         index = index % NUM_ROTATED_IMAGES;
 
@@ -154,12 +193,16 @@ public class GameActivity extends BaseActivity {
         /*p.setColor(Color.BLACK);
         c.drawCircle(screenWidth/2, screenHeight/2, 3*drawScale, p);*/
 
-        p.setColor(Ball.BALL_COLOR);
-        ball.drawBodyAt(rotatedKirbys.get(index), c, p, BaseActivity.getCombinedScale(), screenWidth / 2 + angleXOffset * BaseActivity.getCombinedScale(), screenHeight / 2 + angleYOffset * BaseActivity.getCombinedScale());
+        Bitmap rotatedKirby = rotatedKirbys.get(index);
+        ball.drawBodyAt(rotatedKirby, c, p, BaseActivity.getCombinedScale(), screenWidth / 2 + angleXOffset * BaseActivity.getCombinedScale(), screenHeight / 2 + angleYOffset * BaseActivity.getCombinedScale());
 
-        mine.draw(res, c, p, BaseActivity.getCombinedScale(), cameraXOffset + angleXOffset, cameraYOffset + angleYOffset);
+        for(Mine mine : mines){
+            mine.draw(res, c, p, BaseActivity.getCombinedScale(), cameraXOffset + angleXOffset, cameraYOffset + angleYOffset);
+        }
 
-        spikeRow.draw(res, c, p, BaseActivity.getCombinedScale(), cameraXOffset + angleXOffset, cameraYOffset + angleYOffset);
+        for(SpikeRow spikeRow : spikeRows) {
+            spikeRow.draw(res, c, p, BaseActivity.getCombinedScale(), cameraXOffset + angleXOffset, cameraYOffset + angleYOffset);
+        }
     }
 
 }

@@ -25,7 +25,7 @@ public class Mine extends DrawableBody {
 
     private Body body;
 
-    public Mine(World world, int x, int y){
+    public Mine(World world, float x, float y){
         BodyDef bodyDef = new BodyDef();
         bodyDef.position.set(x, y);
         bodyDef.type = BodyType.STATIC;

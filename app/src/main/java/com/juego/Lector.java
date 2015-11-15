@@ -57,11 +57,11 @@ public class Lector {
 
             while ((strLine = br.readLine())!= null){
                 String[] strAux =  strLine.split(" "); // ex: 0,0 100,0 100,100 0,100
-                if(strLine.contains("wall")) readWall(strAux);
-                if(strLine.contains("mine")) readMine(strAux[1]);
-                if(strLine.contains("btn")) readButton(strAux);
-                if(strLine.contains("spike")) readSpike(strAux);
-                if(strLine.contains("field")) readField(strAux);
+                if(strLine.startsWith("wall")) readWall(strAux);
+                else if(strLine.startsWith("mine")) readMine(strAux[1]);
+                else if(strLine.startsWith("btn")) readButton(strAux);
+                else if(strLine.startsWith("spike")) readSpike(strAux);
+                else if(strLine.startsWith("field")) readField(strAux);
             }
 
         } catch (IOException e) {

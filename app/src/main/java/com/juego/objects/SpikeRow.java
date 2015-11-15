@@ -27,7 +27,7 @@ public class SpikeRow extends DrawableBody {
     private Bitmap bitmap;
     private Body body;
 
-    public SpikeRow(Res res, World world, Vec2[] rect, int orientation, float scale, Paint p){
+    public SpikeRow(Res res, World world, Vec2[] rect, int orientation, float drawScale, Paint p){
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyType.STATIC;
         ChainShape chainShape = new ChainShape();
@@ -48,9 +48,9 @@ public class SpikeRow extends DrawableBody {
             width = 82;
             height = Math.round(BaseActivity.BOX_2D_SCALE * (rect[2].y - rect[0].y));
         }
-        bitmap = Bitmap.createBitmap(Math.round(width*scale), Math.round(height*scale), Bitmap.Config.ARGB_8888);
+        bitmap = Bitmap.createBitmap(Math.round(width*drawScale), Math.round(height*drawScale), Bitmap.Config.ARGB_8888);
         leftTop = rect[0];
-        SpikeRow.drawSpikes(res, bitmap, orientation, scale, p);
+        SpikeRow.drawSpikes(res, bitmap, orientation, drawScale, p);
     }
 
     public static void drawSpikes(Res res, Bitmap bitmap, int orientation, float scale, Paint p){
@@ -61,13 +61,13 @@ public class SpikeRow extends DrawableBody {
             float angle;
             switch (orientation) {
                 case 1:
-                    angle = 270;
+                    angle = 90;
                     break;
                 case 2:
                     angle = 180;
                     break;
                 default:
-                    angle = 90;
+                    angle = 270;
                     break;
             }
             matrix.postRotate(angle);
@@ -81,11 +81,11 @@ public class SpikeRow extends DrawableBody {
         if(orientation % 2 == 0){
             xoff = 60;
             yoff = 0;
-            numberOfSpikes = (int)Math.ceil(bitmap.getWidth() / 60 / scale) + 1;
+            numberOfSpikes = (int)Math.ceil(bitmap.getWidth() / 60 / scale);
         }else{
             xoff = 0;
-            yoff = 82;
-            numberOfSpikes = (int)Math.ceil(bitmap.getHeight() / 82 / scale) + 1;
+            yoff = 60;
+            numberOfSpikes = (int)Math.ceil(bitmap.getHeight() / 60 / scale);
         }
         Canvas c = new Canvas(bitmap);
         for(int i=0; i<numberOfSpikes; i++){

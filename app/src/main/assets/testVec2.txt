@@ -1,6 +1,20 @@
+!Muros tienen un polígono cualquiera. El fin se cierra con el inicio automáticamente
 wall 0,0 100,0 100,100 0,100
 wall 40,20 60,20 60,60 20,60
-mine 10,10
+
+!Las minas sólo tienen una posición.
+mine 15,30
+
+!Los botones tienen una posición y un color (R = rojo, G = verde, P = morado)
 btn 70,70 R
-spike 15,15 21,23.2 0
+
+!Las púas tienen dos puntos: la esquina superior izquierda e inferior derecha de un rectángulo
+!(0 = miran hacia arriba y avanzan horizontalmente, 1 = hacia derecha y verticalmente, 2 = hacia abajo y horizontalmente, 3 = hacia izquierda y verticalmente)
+!Mirando hacia arriba, los spikes tienen altura 8.2 y ancho 6
+spike 0,91.8 60,100 0
+spike 0,50 8.2,74 1
+spike 60,22 68.2,58 1
+
+!Las puertas tienen una posición y una orientación. Desde el punto, se va hacia arriba-derecha (0), hacia abajo-derecha (1),
+!hacia abajo-izquierda (2) o hacia arriba-izquierda (3)
 field 80,80 0
