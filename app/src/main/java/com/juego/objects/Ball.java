@@ -2,7 +2,6 @@ package com.juego.objects;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 
 import com.juego.juego.ActivityThread;
@@ -20,8 +19,18 @@ import org.jbox2d.dynamics.World;
 
 public class Ball extends DrawableBody {
 
-    public static final float ROTATED_GRAVITY_IMPULSE = 15f / ActivityThread.FPS;
-    public static final float MAX_SPEED = 35f;
+    public enum State{
+        NORMAL, HITSTUN, PUSHING_BUTTON
+    }
+
+    private State ballState;
+    private int framesRemaining;
+    public static final int FRAMES_FOR_BLINK_HITSTUN = 3;
+    public static final int FRAMES_FOR_HITSTUN = FRAMES_FOR_BLINK_HITSTUN*15; //1.5 segundos
+    public static final int FRAMES_TO_PUSH_BUTTON = 1;
+
+    public static final float ROTATED_GRAVITY_IMPULSE = 20f / ActivityThread.FPS;
+    public static final float MAX_SPEED = 30f;
     public static final float BALL_DRAW_RADIUS = 3;
     public static final float BALL_COLLISION_RADIUS = 3;
 
@@ -42,6 +51,8 @@ public class Ball extends DrawableBody {
         body.createFixture(fix2);
 
         body.setUserData(this);
+
+        ballState = State.NORMAL;
     }
 
     public Vec2 getPosition(){
@@ -56,7 +67,19 @@ public class Ball extends DrawableBody {
         body.setLinearVelocity(velocity);
     }*/
 
-    public void applyRotatedGravity(double angle){
+    public void update(double gravityAngle){
+        if(ballState == State.HITSTUN || ballState == State.PUSHING_BUTTON){
+            framesRemaining--;
+            if(framesRemaining < 0){
+                ballState = State.NORMAL;
+            }
+        }
+        if(ballState == State.NORMAL || ballState == State.HITSTUN) { //No cae mientras presiona un botón
+            applyRotatedGravity(gravityAngle);
+        }
+    }
+
+    private void applyRotatedGravity(double angle){
         Vec2 force = new Vec2((float)(ROTATED_GRAVITY_IMPULSE*Math.cos(angle)), -(float)(ROTATED_GRAVITY_IMPULSE*Math.sin(angle)));
         body.applyLinearImpulse(force, body.getWorldCenter());
 
@@ -69,7 +92,15 @@ public class Ball extends DrawableBody {
     }
 
     public void drawBodyAt(Bitmap bm, Canvas c, Paint p, float scale, float x, float y){
+        if(ballState == State.HITSTUN) {
+            if ((framesRemaining - 1) % (2 * FRAMES_FOR_BLINK_HITSTUN) >= FRAMES_FOR_BLINK_HITSTUN) {
+                p.setAlpha(170);
+            } else {
+                p.setAlpha(85);
+            }
+        }
         c.drawBitmap(bm, x - BALL_DRAW_RADIUS * scale, y - BALL_DRAW_RADIUS * scale, p);
+        p.setAlpha(255);
     }
 
     @Override
@@ -79,5 +110,14 @@ public class Ball extends DrawableBody {
         float y = pos.y;
         c.drawBitmap(res.bitmap(R.drawable.ball_kirby), BaseActivity.screenWidth/2 + (x + xOff - BALL_DRAW_RADIUS)*scale,
                 BaseActivity.screenHeight/2 + (y + yOff - BALL_DRAW_RADIUS)*scale, p);
+    }
+
+    public boolean canGetHit(){
+        return ballState == State.NORMAL;
+    }
+
+    public void hit(){
+        ballState = State.HITSTUN;
+        framesRemaining = FRAMES_FOR_HITSTUN;
     }
 }

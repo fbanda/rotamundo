@@ -94,6 +94,7 @@ public class GameActivity extends BaseActivity {
 
         Vec2 gravity = new Vec2(0f, 0f);
         world = new World(gravity);
+        world.setContactListener(new GameContactListener());
 
         walls = new ArrayList<>();
         for(Vec2[] vertices : lector.getWalls()){
@@ -162,7 +163,7 @@ public class GameActivity extends BaseActivity {
             sensorProvider.resetButtonState();
         }
 
-        ball.applyRotatedGravity(lastAngle);
+        ball.update(lastAngle);
         world.step(1f / ActivityThread.FPS, 6, 2);
 
         Vec2 position = ball.getPosition();
