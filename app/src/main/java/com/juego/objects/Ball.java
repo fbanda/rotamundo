@@ -1,5 +1,6 @@
 package com.juego.objects;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -69,8 +70,8 @@ public class Ball extends DrawableBody {
         }
     }
 
-    public void drawBodyAt(Res res, Canvas c, Paint p, float scale, float x, float y){
-        c.drawBitmap(res.bitmap(R.drawable.ball_kirby), x - BALL_DRAW_RADIUS * scale, y - BALL_DRAW_RADIUS * scale, p);
+    public void drawBodyAt(Bitmap bm, Canvas c, Paint p, float scale, float x, float y){
+        c.drawBitmap(bm, x - BALL_DRAW_RADIUS * scale, y - BALL_DRAW_RADIUS * scale, p);
     }
 
     @Override

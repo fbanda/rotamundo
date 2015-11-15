@@ -31,20 +31,24 @@ public class GameActivity extends BaseActivity {
     public static final boolean CAMERA = false;
 
     public static final float ANGLE_OFFSET = 5f;
+    private static final int NUM_ROTATED_IMAGES = 36;
     private float cameraXOffset;
     private float cameraYOffset;
     private float angleXOffset;
     private float angleYOffset;
+    private ArrayList<Bitmap> rotatedKirbys;
 
 
     public ArrayList<Bitmap> generateBitmaps (int number) {
         ArrayList<Bitmap> kirbys = new ArrayList<>();
         float angle = 360/number;
         float angle2 = angle;
+        kirbys.add(res.bitmap(R.drawable.ball_kirby));
+
         while (true){
             if (angle2 >= 360) break;
             else{
-                kirbys.add(rotateBitmap(res.bitmap(R.drawable.ball_kirby), angle2));
+                kirbys.add(rotateBitmap(res.bitmap(R.drawable.ball_kirby), -angle2));
                 angle2 = angle2 + angle;
             }
         }
@@ -83,7 +87,7 @@ public class GameActivity extends BaseActivity {
 
         ball = new Ball(world, 15, 15);
 
-        ArrayList<Bitmap> rotatedKirbys = generateBitmaps(16);
+        rotatedKirbys = generateBitmaps(NUM_ROTATED_IMAGES);
 
     }
 
@@ -134,17 +138,17 @@ public class GameActivity extends BaseActivity {
     public void draw(Canvas c) {
         p.setColor(Color.WHITE);
         c.drawRect(0, 0, screenWidth, screenHeight, p);
+        double screenAngle = Math.toDegrees(sensorProvider.getScreenAngle()) + 90;
+        int index = (int)(Math.round(screenAngle / (360/NUM_ROTATED_IMAGES)));
+        index = index % NUM_ROTATED_IMAGES;
 
         p.setColor(ChainWall.WALL_COLOR);
         for(ChainWall wall : walls){
             wall.draw(res, c, p, scale, cameraXOffset + angleXOffset, cameraYOffset + angleYOffset);
         }
 
-        /*p.setColor(Color.BLACK);
-        c.drawCircle(screenWidth/2, screenHeight/2, 3*scale, p);*/
-
         p.setColor(Ball.BALL_COLOR);
-        ball.drawBodyAt(res, c, p, scale, screenWidth / 2 + angleXOffset * scale, screenHeight / 2 + angleYOffset * scale);
+        ball.drawBodyAt(rotatedKirbys.get(index), c, p, scale, screenWidth / 2 + angleXOffset * scale, screenHeight / 2 + angleYOffset * scale);
 
         mine.draw(res, c, p, scale, cameraXOffset + angleXOffset, cameraYOffset + angleYOffset);
     }
