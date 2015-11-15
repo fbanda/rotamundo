@@ -45,8 +45,8 @@ public class Mine extends DrawableBody {
         Vec2 pos = body.getPosition();
         float x = pos.x;
         float y = pos.y;
-        /*c.drawCircle(BaseActivity.screenWidth/2 + (x + xOff)*scale,
-                BaseActivity.screenHeight/2 + (y + yOff)*scale, MINE_DRAW_RADIUS*scale, p);*/
+        /*c.drawCircle(BaseActivity.screenWidth/2 + (x + xOff)*drawScale,
+                BaseActivity.screenHeight/2 + (y + yOff)*drawScale, MINE_DRAW_RADIUS*drawScale, p);*/
         c.drawBitmap(res.bitmap(R.drawable.mine_gordo), BaseActivity.screenWidth/2 + (x + xOff - MINE_DRAW_RADIUS)*scale,
                 BaseActivity.screenHeight/2 + (y + yOff - MINE_DRAW_RADIUS)*scale, p);
     }

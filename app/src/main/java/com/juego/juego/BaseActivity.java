@@ -14,7 +14,12 @@ public abstract class BaseActivity extends Activity {
 
     private GameCanvas canvas;
     protected Paint p;
-    protected float scale;
+
+    public static float drawScale;
+    public static final float BOX_2D_SCALE = 10f;
+    public static float getCombinedScale(){
+        return drawScale*BOX_2D_SCALE;
+    }
 
     public static int screenWidth;
     public static int screenHeight;
@@ -43,11 +48,11 @@ public abstract class BaseActivity extends Activity {
         }
         float density = getResources().getDisplayMetrics().density;
         p = new Paint();
-        p.setStrokeWidth(2*density);
-        p.setTextSize(16*density);
+        p.setStrokeWidth(2 * density);
+        p.setTextSize(16 * density);
         p.setTextAlign(Paint.Align.CENTER);
 
-        scale = 10f * screenHeight / 720;
+        drawScale = (float)screenHeight / 720;
 
         res = new Res(getResources());
     }

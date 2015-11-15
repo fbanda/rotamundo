@@ -10,6 +10,7 @@ import com.juego.Lector;
 import com.juego.objects.Ball;
 import com.juego.objects.ChainWall;
 import com.juego.objects.Mine;
+import com.juego.objects.SpikeRow;
 import com.juego.sensors.GyroscopeManager;
 
 import org.jbox2d.common.Vec2;
@@ -24,6 +25,7 @@ public class GameActivity extends BaseActivity {
     private ArrayList<ChainWall> walls;
     private Ball ball;
     private Mine mine;
+    private SpikeRow spikeRow;
 
     public static final boolean CAMERA = false;
 
@@ -35,7 +37,7 @@ public class GameActivity extends BaseActivity {
 
     @Override
     protected int[] getNeededBitmaps(){
-        return new int[]{R.drawable.ball_kirby, R.drawable.mine_gordo};
+        return new int[]{R.drawable.ball_kirby, R.drawable.mine_gordo, R.drawable.spike};
     }
 
     @Override
@@ -55,6 +57,10 @@ public class GameActivity extends BaseActivity {
         mine = new Mine(world, 15, 30);
 
         ball = new Ball(world, 15, 15);
+
+        spikeRow = new SpikeRow(res, world,
+                new Vec2[]{new Vec2(0, 0), new Vec2(60, 0), new Vec2(60, 8.2f), new Vec2(0, 8.2f)},
+                2, BaseActivity.drawScale, p);
     }
 
     @Override
@@ -80,7 +86,6 @@ public class GameActivity extends BaseActivity {
         double screenAngle = sensorProvider.getScreenAngle();
 
         if(sensorProvider.pushedButton()){
-            Log.d("E", "WORKED");
             sensorProvider.resetButtonState();
         }
 
@@ -107,16 +112,20 @@ public class GameActivity extends BaseActivity {
 
         p.setColor(ChainWall.WALL_COLOR);
         for(ChainWall wall : walls){
-            wall.draw(res, c, p, scale, cameraXOffset + angleXOffset, cameraYOffset + angleYOffset);
+            wall.draw(res, c, p, BaseActivity.getCombinedScale(), cameraXOffset + angleXOffset, cameraYOffset + angleYOffset);
         }
 
         /*p.setColor(Color.BLACK);
-        c.drawCircle(screenWidth/2, screenHeight/2, 3*scale, p);*/
+        c.drawCircle(screenWidth/2, screenHeight/2, 3*drawScale, p);*/
 
         p.setColor(Ball.BALL_COLOR);
-        ball.drawBodyAt(res, c, p, scale, screenWidth / 2 + angleXOffset * scale, screenHeight / 2 + angleYOffset * scale);
+        ball.drawBodyAt(res, c, p, BaseActivity.getCombinedScale(),
+                screenWidth / 2 + angleXOffset * BaseActivity.getCombinedScale(),
+                screenHeight / 2 + angleYOffset * BaseActivity.getCombinedScale());
 
-        mine.draw(res, c, p, scale, cameraXOffset + angleXOffset, cameraYOffset + angleYOffset);
+        mine.draw(res, c, p, BaseActivity.getCombinedScale(), cameraXOffset + angleXOffset, cameraYOffset + angleYOffset);
+
+        spikeRow.draw(res, c, p, BaseActivity.getCombinedScale(), cameraXOffset + angleXOffset, cameraYOffset + angleYOffset);
     }
 
 }

@@ -30,7 +30,8 @@ public class ActivityThread extends Thread {
             if(sleepTime > 0){
                 try{ Thread.sleep(sleepTime); }catch(InterruptedException e){}
             }else{
-                //Te estás retrasando Lag
+                //Te estás retrasando = Lag
+                nextGameTick = SystemClock.uptimeMillis();
             }
         }
     }
