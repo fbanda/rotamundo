@@ -1,12 +1,10 @@
 package com.juego.juego;
-
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-
 import com.juego.Lector;
 import com.juego.objects.Ball;
 import com.juego.objects.ChainWall;
@@ -137,12 +135,6 @@ public class GameActivity extends BaseActivity {
     }
 
     @Override
-    public void onRestart(){
-        super.onRestart();
-        ball.setPosition(new Vec2(15, 15));
-    }
-
-    @Override
     public void onResume(){
         super.onResume();
         sensorProvider.toggleListener();
@@ -191,7 +183,6 @@ public class GameActivity extends BaseActivity {
     public void update(){
         if(pushLag <= 0) {
             if (sensorProvider.pushedButton()) {
-                sensorProvider.resetButtonState();
                 DoorSwitch pressedSwitch = ball.isOnTopOfSwitch(doorSwitches);
                 if (pressedSwitch != null) {
                     pushSwitch(pressedSwitch.getColor());
@@ -201,6 +192,7 @@ public class GameActivity extends BaseActivity {
         }else{
             pushLag--;
         }
+        sensorProvider.resetButtonState();
 
         double screenAngle = sensorProvider.getScreenAngle();
         updateAngle(screenAngle);
