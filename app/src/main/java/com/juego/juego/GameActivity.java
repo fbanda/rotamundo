@@ -120,7 +120,7 @@ public class GameActivity extends BaseActivity {
             doorSwitches.add(new DoorSwitch(button.x, button.y, DoorColor.fromChar(button.color)));
         }
 
-        ball = new Ball(world, 15, 15);
+        ball = new Ball(world, lector.getPlayerX(), lector.getPlayerY());
 
     }
 
