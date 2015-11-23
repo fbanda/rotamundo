@@ -10,8 +10,11 @@ import android.os.Bundle;
 import com.juego.Lector;
 import com.juego.objects.Ball;
 import com.juego.objects.ChainWall;
+import com.juego.objects.DoorColor;
+import com.juego.objects.DoorSwitch;
 import com.juego.objects.Mine;
 import com.juego.objects.SpikeRow;
+import com.juego.objects.scanner.Button;
 import com.juego.objects.scanner.Spike;
 import com.juego.sensors.GyroscopeManager;
 
@@ -29,6 +32,10 @@ public class GameActivity extends BaseActivity {
     private ArrayList<ChainWall> walls;
     private ArrayList<Mine> mines;
     private ArrayList<SpikeRow> spikeRows;
+
+    private boolean[] colorSwitches = new boolean[DoorColor.values().length];
+    private ArrayList<DoorSwitch> doorSwitches;
+
     private Ball ball;
 
     public static final boolean CAMERA = true;
@@ -94,7 +101,7 @@ public class GameActivity extends BaseActivity {
 
         Vec2 gravity = new Vec2(0f, 0f);
         world = new World(gravity);
-        world.setContactListener(new GameContactListener());
+        world.setContactListener(new GameContactListener(this));
 
         walls = new ArrayList<>();
         for(Vec2[] vertices : lector.getWalls()){
@@ -108,9 +115,18 @@ public class GameActivity extends BaseActivity {
         for(Spike spike : lector.getSpikes()){
             spikeRows.add(new SpikeRow(res, world, spike.getRect(), spike.orientation, BaseActivity.drawScale, p));
         }
+        doorSwitches = new ArrayList<>();
+        for(Button button : lector.getButtons()){
+            doorSwitches.add(new DoorSwitch(button.x, button.y, DoorColor.fromChar(button.color)));
+        }
 
         ball = new Ball(world, 15, 15);
 
+    }
+
+    public void removeMine(Mine mine){
+        mines.remove(mine);
+        mine.body.setActive(false);
     }
 
     @Override
@@ -154,6 +170,10 @@ public class GameActivity extends BaseActivity {
         }
     }
 
+    public void pushSwitch(DoorColor color){
+
+    }
+
     @Override
     public void update(){
         double screenAngle = sensorProvider.getScreenAngle();
@@ -161,20 +181,27 @@ public class GameActivity extends BaseActivity {
 
         if(sensorProvider.pushedButton()){
             sensorProvider.resetButtonState();
+
+            DoorSwitch pressedSwitch = ball.isOnTopOfSwitch(doorSwitches);
+            if(pressedSwitch != null){
+                pushSwitch(pressedSwitch.getColor());
+            }
         }
 
-        ball.update(lastAngle);
-        world.step(1f / ActivityThread.FPS, 6, 2);
+        if(ball.notPushingButton()) {
+            ball.update(lastAngle);
+            world.step(1f / ActivityThread.FPS, 6, 2);
 
-        Vec2 position = ball.getPosition();
-        cameraXOffset = -position.x;
-        cameraYOffset = -position.y;
-        if(CAMERA) {
-            angleXOffset = ANGLE_OFFSET * (float) Math.cos(lastAngle);
-            angleYOffset = -ANGLE_OFFSET * (float) Math.sin(lastAngle);
-        }else{
-            angleXOffset = 0;
-            angleYOffset = 0;
+            Vec2 position = ball.getPosition();
+            cameraXOffset = -position.x;
+            cameraYOffset = -position.y;
+            if (CAMERA) {
+                angleXOffset = ANGLE_OFFSET * (float) Math.cos(lastAngle);
+                angleYOffset = -ANGLE_OFFSET * (float) Math.sin(lastAngle);
+            } else {
+                angleXOffset = 0;
+                angleYOffset = 0;
+            }
         }
     }
 
@@ -185,6 +212,10 @@ public class GameActivity extends BaseActivity {
         double screenAngle = Math.toDegrees(lastAngle) + 90;
         int index = (int)(Math.round(screenAngle / (360/NUM_ROTATED_IMAGES)));
         index = index % NUM_ROTATED_IMAGES;
+
+        for(DoorSwitch doorSwitch : doorSwitches){
+            doorSwitch.draw(res, c, p, BaseActivity.getCombinedScale(), cameraXOffset + angleXOffset, cameraYOffset + angleYOffset);
+        }
 
         p.setColor(ChainWall.WALL_COLOR);
         for(ChainWall wall : walls){

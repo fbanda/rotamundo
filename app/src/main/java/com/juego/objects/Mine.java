@@ -23,7 +23,7 @@ public class Mine extends DrawableBody {
     public static final float MINE_DRAW_RADIUS = 5.3f;
     public static final float MINE_COLLISION_RADIUS = 5f;
 
-    private Body body;
+    public final Body body;
 
     public Mine(World world, float x, float y){
         BodyDef bodyDef = new BodyDef();
