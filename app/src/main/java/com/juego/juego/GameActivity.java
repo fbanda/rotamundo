@@ -33,6 +33,8 @@ public class GameActivity extends BaseActivity {
     private ArrayList<Mine> mines;
     private ArrayList<SpikeRow> spikeRows;
 
+    public static final int FRAMES_FOR_PUSH_LAG = ActivityThread.FPS;
+    private int pushLag = 0;
     private boolean[] colorSwitches = new boolean[DoorColor.values().length];
     private ArrayList<DoorSwitch> doorSwitches;
 
@@ -182,18 +184,21 @@ public class GameActivity extends BaseActivity {
 
     @Override
     public void update(){
-        double screenAngle = sensorProvider.getScreenAngle();
-        updateAngle(screenAngle);
-
-        if(sensorProvider.pushedButton()){
-            sensorProvider.resetButtonState();
-
-            DoorSwitch pressedSwitch = ball.isOnTopOfSwitch(doorSwitches);
-            if(pressedSwitch != null){
-                pushSwitch(pressedSwitch.getColor());
+        if(pushLag <= 0) {
+            if (sensorProvider.pushedButton()) {
+                sensorProvider.resetButtonState();
+                DoorSwitch pressedSwitch = ball.isOnTopOfSwitch(doorSwitches);
+                if (pressedSwitch != null) {
+                    pushSwitch(pressedSwitch.getColor());
+                    pushLag = FRAMES_FOR_PUSH_LAG;
+                }
             }
+        }else{
+            pushLag--;
         }
 
+        double screenAngle = sensorProvider.getScreenAngle();
+        updateAngle(screenAngle);
         ball.update(lastAngle);
         world.step(1f / ActivityThread.FPS, 6, 2);
 
