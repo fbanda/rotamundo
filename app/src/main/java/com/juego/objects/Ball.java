@@ -17,10 +17,12 @@ import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.FixtureDef;
 import org.jbox2d.dynamics.World;
 
+import java.util.List;
+
 public class Ball extends DrawableBody {
 
     public enum State{
-        NORMAL, HITSTUN, PUSHING_BUTTON
+        NORMAL, HITSTUN
     }
 
     private State ballState;
@@ -68,7 +70,7 @@ public class Ball extends DrawableBody {
     }*/
 
     public void update(double gravityAngle){
-        if(ballState == State.HITSTUN || ballState == State.PUSHING_BUTTON){
+        if(ballState == State.HITSTUN){
             framesRemaining--;
             if(framesRemaining < 0){
                 ballState = State.NORMAL;
@@ -108,8 +110,8 @@ public class Ball extends DrawableBody {
         Vec2 pos = body.getPosition();
         float x = pos.x;
         float y = pos.y;
-        c.drawBitmap(res.bitmap(R.drawable.ball_kirby), BaseActivity.screenWidth/2 + (x + xOff - BALL_DRAW_RADIUS)*scale,
-                BaseActivity.screenHeight/2 + (y + yOff - BALL_DRAW_RADIUS)*scale, p);
+        c.drawBitmap(res.bitmap(R.drawable.ball_kirby), BaseActivity.screenWidth / 2 + (x + xOff - BALL_DRAW_RADIUS) * scale,
+                BaseActivity.screenHeight / 2 + (y + yOff - BALL_DRAW_RADIUS) * scale, p);
     }
 
     public boolean canGetHit(){
@@ -119,5 +121,14 @@ public class Ball extends DrawableBody {
     public void hit(){
         ballState = State.HITSTUN;
         framesRemaining = FRAMES_FOR_HITSTUN;
+    }
+
+    public DoorSwitch isOnTopOfSwitch(List<DoorSwitch> doorSwitches){
+        for(DoorSwitch doorSwitch : doorSwitches){
+            if(doorSwitch.isOnTop(body.getPosition())){
+                return doorSwitch;
+            }
+        }
+        return null;
     }
 }

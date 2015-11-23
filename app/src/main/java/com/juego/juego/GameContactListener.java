@@ -16,6 +16,12 @@ import org.jbox2d.dynamics.contacts.Contact;
  */
 public class GameContactListener implements ContactListener {
 
+    private GameActivity activity;
+
+    public GameContactListener(GameActivity activity) {
+        this.activity = activity;
+    }
+
     @Override
     public void beginContact(Contact contact) {
         DrawableBody object1 = (DrawableBody)contact.getFixtureA().getBody().getUserData();
@@ -40,6 +46,10 @@ public class GameContactListener implements ContactListener {
         if(other instanceof Mine || other instanceof SpikeRow){
             if(ball.canGetHit()) {
                 ball.hit();
+            }
+
+            if(other instanceof Mine){
+                activity.removeMine((Mine)other);
             }
         }
     }
