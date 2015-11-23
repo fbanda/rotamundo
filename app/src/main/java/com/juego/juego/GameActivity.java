@@ -176,7 +176,13 @@ public class GameActivity extends BaseActivity {
     }
 
     public void pushSwitch(DoorColor color){
-
+        int i = color.ordinal();
+        colorSwitches[i] = !colorSwitches[i];
+        for(DoorSwitch doorSwitch : doorSwitches){
+            if(doorSwitch.getColor().equals(color)){
+                doorSwitch.pressed = colorSwitches[i];
+            }
+        }
     }
 
     @Override
@@ -193,20 +199,18 @@ public class GameActivity extends BaseActivity {
             }
         }
 
-        if(ball.notPushingButton()) {
-            ball.update(lastAngle);
-            world.step(1f / ActivityThread.FPS, 6, 2);
+        ball.update(lastAngle);
+        world.step(1f / ActivityThread.FPS, 6, 2);
 
-            Vec2 position = ball.getPosition();
-            cameraXOffset = -position.x;
-            cameraYOffset = -position.y;
-            if (CAMERA) {
-                angleXOffset = ANGLE_OFFSET * (float) Math.cos(lastAngle);
-                angleYOffset = -ANGLE_OFFSET * (float) Math.sin(lastAngle);
-            } else {
-                angleXOffset = 0;
-                angleYOffset = 0;
-            }
+        Vec2 position = ball.getPosition();
+        cameraXOffset = -position.x;
+        cameraYOffset = -position.y;
+        if (CAMERA) {
+            angleXOffset = ANGLE_OFFSET * (float) Math.cos(lastAngle);
+            angleYOffset = -ANGLE_OFFSET * (float) Math.sin(lastAngle);
+        } else {
+            angleXOffset = 0;
+            angleYOffset = 0;
         }
     }
 

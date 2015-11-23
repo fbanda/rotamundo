@@ -20,7 +20,7 @@ public class DoorSwitch {
     private float x;
     private float y;
     private DoorColor color;
-    private boolean pressed;
+    public boolean pressed;
 
     public DoorSwitch(float x, float y, DoorColor color) {
         this.x = x;
