@@ -45,6 +45,7 @@ public class GameContactListener implements ContactListener {
     public void handleCollision(Ball ball, DrawableBody other){
         if(other instanceof Mine || other instanceof SpikeRow){
             if(ball.canGetHit()) {
+                activity.reduceLives();
                 ball.hit();
             }
 
