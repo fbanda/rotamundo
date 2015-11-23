@@ -6,7 +6,7 @@ wall 40,20 60,20 60,60 20,60
 mine 15,30
 
 !Los botones tienen una posición y un color (R = rojo, G = verde, P = morado)
-btn 70,70 R
+btn 90,90 R
 
 !Las púas tienen dos puntos: la esquina superior izquierda e inferior derecha de un rectángulo
 !(0 = miran hacia arriba y avanzan horizontalmente, 1 = hacia derecha y verticalmente, 2 = hacia abajo y horizontalmente, 3 = hacia izquierda y verticalmente)
