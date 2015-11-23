@@ -109,7 +109,7 @@ public class GameActivity extends BaseActivity {
             spikeRows.add(new SpikeRow(res, world, spike.getRect(), spike.orientation, BaseActivity.drawScale, p));
         }
 
-        ball = new Ball(world, 15, 15);
+        ball = new Ball(world, lector.getPlayerX(), lector.getPlayerY());
 
     }
 

@@ -14,12 +14,15 @@ import java.util.ArrayList;
 /**
  * Created by KEVIN BROWN on 25/10/2015.
  */
+
 public class Lector {
     ArrayList<Vec2[]> wallVertices;
     ArrayList<Vec2> mines;
     ArrayList<Button> buttons;
     ArrayList<Spike> spikes;
     ArrayList<ForceField> fields;
+    float playerX;
+    float playerY;
 
     public Lector(){
         wallVertices = new ArrayList<>();
@@ -27,6 +30,14 @@ public class Lector {
         buttons = new ArrayList<>();
         spikes = new ArrayList<>();
         fields = new ArrayList<>();
+    }
+
+    public float getPlayerX(){
+        return playerX;
+    }
+
+    public float getPlayerY(){
+        return playerY;
     }
 
     public ArrayList<Vec2[]> getWalls(){
@@ -62,6 +73,7 @@ public class Lector {
                 else if(strLine.startsWith("btn")) readButton(strAux);
                 else if(strLine.startsWith("spike")) readSpike(strAux);
                 else if(strLine.startsWith("field")) readField(strAux);
+                else if(strLine.startsWith("player")) readPlayer(strAux[1]);
             }
 
         } catch (IOException e) {
@@ -110,6 +122,12 @@ public class Lector {
         ForceField field = new ForceField(Float.parseFloat(strNumbersAux[0]), Float.parseFloat(strNumbersAux[1]), Integer.parseInt(verts[2]));
 
         fields.add(field);
+    }
+
+    private void readPlayer(String vert){
+        String[] strNumbersAux = vert.split(",");
+        playerX = Float.parseFloat(strNumbersAux[0]);
+        playerY = Float.parseFloat(strNumbersAux[1]);
     }
 
 }
