@@ -40,6 +40,8 @@ public class GameActivity extends BaseActivity {
     private float angleXOffset;
     private float angleYOffset;
 
+    private int lives;
+
     /* Rotar */
     private static final int NUM_ROTATED_IMAGES = 36;
     private ArrayList<Bitmap> rotatedKirbys;
@@ -83,6 +85,7 @@ public class GameActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         sensorProvider = new GyroscopeManager((SensorManager)getSystemService(SENSOR_SERVICE));
+        lives = 3;
 
         //Crear bitmaps rotados
         rotatedKirbys = generateBitmaps(NUM_ROTATED_IMAGES);
@@ -100,10 +103,12 @@ public class GameActivity extends BaseActivity {
         for(Vec2[] vertices : lector.getWalls()){
             walls.add(new ChainWall(world, vertices, true));
         }
+
         mines = new ArrayList<>();
         for(Vec2 vertex : lector.getMines()){
             mines.add(new Mine(world, vertex.x, vertex.y));
         }
+
         spikeRows = new ArrayList<>();
         for(Spike spike : lector.getSpikes()){
             spikeRows.add(new SpikeRow(res, world, spike.getRect(), spike.orientation, BaseActivity.drawScale, p));
@@ -204,6 +209,19 @@ public class GameActivity extends BaseActivity {
         for(SpikeRow spikeRow : spikeRows) {
             spikeRow.draw(res, c, p, BaseActivity.getCombinedScale(), cameraXOffset + angleXOffset, cameraYOffset + angleYOffset);
         }
+
+        c.drawText("Lives: " + lives, screenWidth-100, 40, p);
+    }
+
+    public void reduceLives(){
+        lives--;
+        if(lives==0){
+            gameOver();
+        }
+    }
+
+    private void gameOver(){
+        //TODO
     }
 
 }
