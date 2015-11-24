@@ -5,27 +5,49 @@ wall 48,0 66,0 66,30 48,30
 wall 30,42 78,42
 wall 78,0 96,0 96,12 78,12
 wall 150,0 192,0 192,18 150,18
-wall 78,24 108,24 108,12 132,12 132,72 120,72 96,42 78,42
+wall 78,24 108,24 108,12 126,12 132,18 132,72 120,72 96,42 78,42
 wall 120,84 192,84 192,90 120,90
 wall 150,36 192,36 192,42 174,42 174,54 162,72 150,72
+wall 90,102 126,102 162,126 102,126
+wall 24,60 36,60 36,66 30,66 30,114 36,114 36,120 24,114
+wall 0,126 24,138 42,138 42,144 0,144
+wall 48,78 54,78 90,144 54,144 54,132 48,96
+wall 162,126 162,144 160,144 160,126
+wall 36,60 90,60
+wall 90,60 108,84
+wall 108,84 108,90
+wall 108,90 120,90 120,92 108,92
 
 !Las minas sólo tienen una posición.
 mine 145,5
+mine 5,47
+mine 5,121
+mine 19,85
+mine 29,55
+mine 71,67
+mine 79,73
 
 !Los botones tienen una posición y un color (R = rojo, G = verde, P = morado)
 btn 183,27 R
 btn 183,51 G
+btn 177,111 P
 
 !Las púas tienen dos puntos: la esquina superior izquierda e inferior derecha de un rectángulo
 !(0 = miran hacia arriba y avanzan horizontalmente, 1 = hacia derecha y verticalmente, 2 = hacia abajo y horizontalmente, 3 = hacia izquierda y verticalmente)
 !Mirando hacia arriba, los spikes tienen altura 8.2 y ancho 6
-!spike 0,91.8 60,100 0
-!spike 0,50 8.2,74 1
-!spike 60,22 68.2,58 1
+spike 66,0 78,8.2 2
+spike 78,42 96,50.2 2
+spike 174,75.8 192,84 0
+spike 108,81.8 120,90 0
+spike 30,66 68.2,114 1
+spike 42,135.8 54,144 0
+spike 162,135.8 192,144 0
 
 !Las puertas tienen una posición y una orientación. Desde el punto, se va hacia arriba-derecha (0), hacia abajo-derecha (1),
 !hacia abajo-izquierda (2) o hacia arriba-izquierda (3)
-field 170,66 0 R
+field 132,66 0 R
+field 42,42 1 G
+field 132,144 3 P
 
 !La posición del jugador solo debe ser especificada una vez, como x,y
 player 9,9
