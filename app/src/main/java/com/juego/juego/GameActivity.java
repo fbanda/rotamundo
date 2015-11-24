@@ -278,7 +278,12 @@ public class GameActivity extends BaseActivity {
     }
 
     private boolean checkVictoryCondition(){
-        return false;
+        Vec2 topLeftCorner = lector.victoryRect.get(0);
+        Vec2 botRightCorner = lector.victoryRect.get(1);
+        Vec2 ballPos = ball.getPosition();
+        return ballPos.x >= topLeftCorner.x && ballPos.x <= botRightCorner.x
+                && ballPos.y>=topLeftCorner.y && ballPos.y<= botRightCorner.y;
+
     }
 
 }
