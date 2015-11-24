@@ -21,6 +21,7 @@ public class Lector {
     ArrayList<Button> buttons;
     ArrayList<Spike> spikes;
     ArrayList<ForceField> fields;
+    ArrayList<Vec2> victoryRect;
     float playerX;
     float playerY;
 
@@ -30,6 +31,7 @@ public class Lector {
         buttons = new ArrayList<>();
         spikes = new ArrayList<>();
         fields = new ArrayList<>();
+        victoryRect = new ArrayList<>();
     }
 
     public float getPlayerX(){
@@ -74,6 +76,7 @@ public class Lector {
                 else if(strLine.startsWith("spike")) readSpike(strAux);
                 else if(strLine.startsWith("field")) readField(strAux);
                 else if(strLine.startsWith("player")) readPlayer(strAux[1]);
+                else if(strLine.startsWith("victory")) readVictoryRect(strAux);
             }
 
         } catch (IOException e) {
@@ -119,7 +122,8 @@ public class Lector {
     private void readField(String[] verts){
         String[] strNumbersAux = verts[1].split(",");
 
-        ForceField field = new ForceField(Float.parseFloat(strNumbersAux[0]), Float.parseFloat(strNumbersAux[1]), Integer.parseInt(verts[2]));
+        ForceField field = new ForceField(Float.parseFloat(strNumbersAux[0]),
+                Float.parseFloat(strNumbersAux[1]), Integer.parseInt(verts[2]), verts[3].charAt(0));
 
         fields.add(field);
     }
@@ -128,6 +132,17 @@ public class Lector {
         String[] strNumbersAux = vert.split(",");
         playerX = Float.parseFloat(strNumbersAux[0]);
         playerY = Float.parseFloat(strNumbersAux[1]);
+    }
+
+    private void readVictoryRect(String[] verts){
+        String[] strNumbersAux1 = verts[1].split(",");
+        String[] strNumbersAux2 = verts[2].split(",");
+
+        Vec2 vec = new Vec2(Float.parseFloat(strNumbersAux1[0]),Float.parseFloat(strNumbersAux1[1]));
+        victoryRect.add(vec);
+
+        vec = new Vec2(Float.parseFloat(strNumbersAux2[0]),Float.parseFloat(strNumbersAux2[1]) );
+        victoryRect.add(vec);
     }
 
 }

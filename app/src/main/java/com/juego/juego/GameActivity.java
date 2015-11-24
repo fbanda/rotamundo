@@ -209,7 +209,11 @@ public class GameActivity extends BaseActivity {
             gameOver();
             return;
         }
+
         world.step(1f / ActivityThread.FPS, 6, 2);
+        if(checkVictoryCondition()){
+            restartGame();
+        }
 
         Vec2 position = ball.getPosition();
         cameraXOffset = -position.x;
@@ -271,6 +275,10 @@ public class GameActivity extends BaseActivity {
         activateMines();
         resetDoorSwitches();
         ball.setPosition( new Vec2(lector.getPlayerX(), lector.getPlayerY()));
+    }
+
+    private boolean checkVictoryCondition(){
+        return false;
     }
 
 }
