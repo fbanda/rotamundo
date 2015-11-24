@@ -35,26 +35,40 @@ public class Door extends DrawableBody {
 
     public Door(World world, float x, float y, int orientation, DoorColor color) {
         this.color = color;
+        this.orientation = orientation;
 
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyType.STATIC;
+        BodyDef bodyDef1 = new BodyDef();
+        bodyDef1.type = BodyType.STATIC;
+        BodyDef bodyDef2 = new BodyDef();
+        bodyDef2.type = BodyType.STATIC;
+        BodyDef bodyDef3 = new BodyDef();
+        bodyDef3.type = BodyType.STATIC;
 
         Vec2[] points1;
         Vec2[] points2;
         Vec2[] points3;
         switch(orientation) {
             case 0:
-            case 1:
             case 2:
             default:
-                points1 = new Vec2[]{new Vec2(x, y), new Vec2(x + 1.7f, y),
-                        new Vec2(x + 1.7f, y - 9.2f), new Vec2(x, y - 9.2f)};
-                points2 = new Vec2[]{new Vec2(x + 7.5f, y), new Vec2(x + 9.2f, y),
-                        new Vec2(x + 9.2f, y - 9.2f), new Vec2(x + 7.5f, y - 9.2f)};
-                points3 = new Vec2[]{new Vec2(x + 1.7f, y), new Vec2(x + 7.5f, y),
-                        new Vec2(x + 7.5f, y + 6.6f), new Vec2(x + 1.7f, y + y + 66.f)};
+                points1 = new Vec2[]{new Vec2(x, y), new Vec2(x + 3.4f, y),
+                        new Vec2(x + 3.4f, y - 18.4f), new Vec2(x, y - 18.4f)};
+                points2 = new Vec2[]{new Vec2(x + 15f, y), new Vec2(x + 18.4f, y),
+                        new Vec2(x + 18.4f, y - 18.4f), new Vec2(x + 15f, y - 18.4f)};
+                points3 = new Vec2[]{new Vec2(x + 3.4f, y), new Vec2(x + 15f, y),
+                        new Vec2(x + 15f, y - 13.2f), new Vec2(x + 3.4f, y - 13.2f)};
                 drawX = x;
-                drawY = y - 9.2f;
+                drawY = y - 18.4f;
+                break;
+            case 1:
+                points1 = new Vec2[]{new Vec2(x, y), new Vec2(x + 9.2f, y),
+                        new Vec2(x + 9.2f, y + 1.7f), new Vec2(x, y + 1.7f)};
+                points2 = new Vec2[]{new Vec2(x, y + 7.5f), new Vec2(x + 9.2f, y + 7.5f),
+                        new Vec2(x + 9.2f, y + 9.2f), new Vec2(x, y + 9.2f)};
+                points3 = new Vec2[]{new Vec2(x, y + 1.7f), new Vec2(x + 9.2f, y + 1.7f),
+                        new Vec2(x + 9.2f, y + 7.5f), new Vec2(x, y + 7.5f)};
+                drawX = x;
+                drawY = y;
                 break;
         }
 
@@ -63,7 +77,7 @@ public class Door extends DrawableBody {
         FixtureDef fixtureDef1 = new FixtureDef();
         fixtureDef1.shape = chain1Shape;
         fixtureDef1.friction = 0.05f;
-        body1 = world.createBody(bodyDef);
+        body1 = world.createBody(bodyDef1);
         body1.createFixture(fixtureDef1);
 
         ChainShape chain2Shape = new ChainShape();
@@ -71,23 +85,27 @@ public class Door extends DrawableBody {
         FixtureDef fixtureDef2 = new FixtureDef();
         fixtureDef2.shape = chain2Shape;
         fixtureDef2.friction = 0.05f;
-        body2 = world.createBody(bodyDef);
-        body2.createFixture(fixtureDef1);
+        body2 = world.createBody(bodyDef2);
+        body2.createFixture(fixtureDef2);
 
         ChainShape chain3Shape = new ChainShape();
         chain3Shape.createLoop(points3, points3.length);
         FixtureDef fixtureDef3 = new FixtureDef();
         fixtureDef3.shape = chain3Shape;
         fixtureDef3.friction = 0.05f;
-        electricBody = world.createBody(bodyDef);
-        electricBody.createFixture(fixtureDef1);
+        electricBody = world.createBody(bodyDef3);
+        electricBody.createFixture(fixtureDef3);
+    }
+
+    public DoorColor getColor(){
+        return color;
     }
 
     @Override
     protected void drawBody(Res res, Canvas c, Paint p, float scale, float xOff, float yOff) {
     }
 
-    protected void drawBody(Res res, Canvas c, Paint p, float scale, float xOff, float yOff, boolean pressed) {
+    public void drawDoor(Canvas c, Paint p, float scale, float xOff, float yOff, boolean pressed) {
         c.drawBitmap(getBitmap(pressed), BaseActivity.screenWidth/2 + (drawX + xOff)*scale,
                 BaseActivity.screenHeight/2 + (drawY + yOff)*scale, p);
     }
@@ -107,6 +125,7 @@ public class Door extends DrawableBody {
                 }else{
                     id = R.drawable.door_r_closed_2;
                 }
+                break;
             case GREEN:
                 if(pressed){
                     id = R.drawable.door_g_open;
@@ -115,6 +134,7 @@ public class Door extends DrawableBody {
                 }else{
                     id = R.drawable.door_g_closed_2;
                 }
+                break;
             case PURPLE:
                 if(pressed){
                     id = R.drawable.door_p_open;
@@ -123,6 +143,7 @@ public class Door extends DrawableBody {
                 }else{
                     id = R.drawable.door_p_closed_2;
                 }
+                break;
         }
         return GameActivity.rotatedDoors.get(id)[orientation];
     }

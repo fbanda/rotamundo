@@ -23,7 +23,6 @@ import org.jbox2d.dynamics.World;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 
 public class GameActivity extends BaseActivity {
 
@@ -36,7 +35,7 @@ public class GameActivity extends BaseActivity {
     private ArrayList<Mine> mines;
     private ArrayList<SpikeRow> spikeRows;
 
-    public static final int FRAMES_FOR_PUSH_LAG = ActivityThread.FPS;
+    public static final int FRAMES_FOR_PUSH_LAG = 3*ActivityThread.FPS;
     private int pushLag = 0;
     private boolean[] colorSwitches = new boolean[DoorColor.values().length];
     private ArrayList<DoorSwitch> doorSwitches;
@@ -157,7 +156,7 @@ public class GameActivity extends BaseActivity {
         }
         doors = new ArrayList<>();
         for(ForceField forceField : lector.getForceFields()){
-            doors.add(new Door(forceField.x, forceField.y, forceField.orientation, DoorColor.fromChar(forceField.color)));
+            doors.add(new Door(world, forceField.x, forceField.y, forceField.orientation, DoorColor.fromChar(forceField.color)));
         }
 
         ball = new Ball(world, lector.getPlayerX(), lector.getPlayerY());
@@ -177,8 +176,12 @@ public class GameActivity extends BaseActivity {
     }
 
     public void resetDoorSwitches(){
-        for(int i=0;i<colorSwitches.length;i++)
-            colorSwitches[i] = true;
+        for(int i=0; i<colorSwitches.length; i++) {
+            colorSwitches[i] = false;
+        }
+        for(Door door : doors){
+            door.setActive(true);
+        }
     }
 
     @Override
@@ -219,10 +222,15 @@ public class GameActivity extends BaseActivity {
     public void pushSwitch(DoorColor color){
         int i = color.ordinal();
         colorSwitches[i] = !colorSwitches[i];
+        for(Door door : doors){
+            door.setActive(!colorSwitches[i]);
+        }
     }
 
     @Override
     public void update(){
+        Door.frame++;
+
         if(pushLag <= 0) {
             if (sensorProvider.pushedButton()) {
                 DoorSwitch pressedSwitch = ball.isOnTopOfSwitch(doorSwitches);
@@ -294,7 +302,8 @@ public class GameActivity extends BaseActivity {
         }
 
         for(Door door : doors){
-            door.draw(res, c, p, BaseActivity.getCombinedScale(), cameraXOffset + angleXOffset, cameraYOffset + angleYOffset);
+            door.drawDoor(c, p, BaseActivity.getCombinedScale(), cameraXOffset + angleXOffset, cameraYOffset + angleYOffset,
+                    colorSwitches[door.getColor().ordinal()]);
         }
 
         c.drawText("Lives: " + lives, screenWidth-100, 40, p);
