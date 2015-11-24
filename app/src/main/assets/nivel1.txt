@@ -1,0 +1,34 @@
+!Muros tienen un polígono cualquiera. El fin se cierra con el inicio automáticamente
+wall 0,0 192,0 192,144 0,144
+wall 0,18 30,18 30,42 0,42
+wall 48,0 66,0 66,30 48,30
+wall 30,42 78,42
+wall 78,0 96,0 96,12 78,12
+wall 150,0 192,0 192,18 150,18
+wall 78,24 108,24 108,12 132,12 132,72 120,72 96,42 78,42
+wall 120,84 192,84 192,90 120,90
+wall 150,36 192,36 192,42 174,42 174,54 162,72 150,72
+
+!Las minas sólo tienen una posición.
+mine 145,5
+
+!Los botones tienen una posición y un color (R = rojo, G = verde, P = morado)
+btn 183,27 R
+btn 183,51 G
+
+!Las púas tienen dos puntos: la esquina superior izquierda e inferior derecha de un rectángulo
+!(0 = miran hacia arriba y avanzan horizontalmente, 1 = hacia derecha y verticalmente, 2 = hacia abajo y horizontalmente, 3 = hacia izquierda y verticalmente)
+!Mirando hacia arriba, los spikes tienen altura 8.2 y ancho 6
+!spike 0,91.8 60,100 0
+!spike 0,50 8.2,74 1
+!spike 60,22 68.2,58 1
+
+!Las puertas tienen una posición y una orientación. Desde el punto, se va hacia arriba-derecha (0), hacia abajo-derecha (1),
+!hacia abajo-izquierda (2) o hacia arriba-izquierda (3)
+field 170,66 0 R
+
+!La posición del jugador solo debe ser especificada una vez, como x,y
+player 9,9
+
+!El rectángulo de victoria
+victory 144,120 162,138

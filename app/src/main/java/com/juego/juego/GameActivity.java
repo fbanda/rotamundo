@@ -101,7 +101,7 @@ public class GameActivity extends BaseActivity {
         //Inicializar el nivel
 
         lector = new Lector();
-        lector.Leer(getAssets(), "testVec2.txt");
+        lector.Leer(getAssets(), "nivel1.txt");
 
         Vec2 gravity = new Vec2(0f, 0f);
         world = new World(gravity);
