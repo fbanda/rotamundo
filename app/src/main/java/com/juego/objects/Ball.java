@@ -31,8 +31,8 @@ public class Ball extends DrawableBody {
     public static final int FRAMES_FOR_HITSTUN = FRAMES_FOR_BLINK_HITSTUN*15; //1.5 segundos
     public static final int FRAMES_TO_PUSH_BUTTON = 1;
 
-    public static final float ROTATED_GRAVITY_IMPULSE = 20f / ActivityThread.FPS;
-    public static final float MAX_SPEED = 30f;
+    public static final float ROTATED_GRAVITY_IMPULSE = 22f / ActivityThread.FPS;
+    public static final float MAX_SPEED = 26f;
     public static final float BALL_DRAW_RADIUS = 3;
     public static final float BALL_COLLISION_RADIUS = 3;
 
@@ -48,7 +48,7 @@ public class Ball extends DrawableBody {
         FixtureDef fix2 = new FixtureDef();
         fix2.shape = cShape;
         fix2.friction = 0.05f;
-        fix2.restitution = 0.5f;
+        fix2.restitution = 0.3f;
         body = world.createBody(bodyDef);
         body.createFixture(fix2);
 

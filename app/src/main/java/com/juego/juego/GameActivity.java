@@ -71,6 +71,21 @@ public class GameActivity extends BaseActivity {
     private ArrayList<Bitmap> rotatedKirbys;
     public static HashMap<Integer, Bitmap[]> rotatedDoors;
 
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus){
+        super.onWindowFocusChanged(hasFocus);
+        if(hasFocus){
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+            );
+        }
+    }
+
     public ArrayList<Bitmap> generateKirbyBitmaps(int number) {
         ArrayList<Bitmap> kirbys = new ArrayList<>();
         float angle = 360/number;
