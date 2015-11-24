@@ -8,6 +8,7 @@ import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Display;
+import android.view.View;
 import android.view.WindowManager;
 
 public abstract class BaseActivity extends Activity {
@@ -57,15 +58,19 @@ public abstract class BaseActivity extends Activity {
         res = new Res(getResources());
     }
 
+    public void setOnTouchListener(View.OnTouchListener listener){
+        canvas.setOnTouchListener(listener);
+    }
+
     @Override
     public void onResume(){
         super.onResume();
         thread = new ActivityThread(this);
         thread.start();
 
-        for(int bitmap : getNeededBitmaps()){
+        /*for(int bitmap : getNeededBitmaps()){
             res.bitmap(bitmap);
-        }
+        }*/
     }
 
     @Override
@@ -73,7 +78,7 @@ public abstract class BaseActivity extends Activity {
         super.onPause();
         thread.stopThread();
 
-        res.freeAllResources();
+        //res.freeAllResources();
     }
 
     public final void draw(){
