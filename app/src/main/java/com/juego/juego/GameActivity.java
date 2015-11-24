@@ -7,10 +7,12 @@ import android.graphics.Paint;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 
 import com.juego.Lector;
+import com.juego.SoundManager;
 import com.juego.objects.Ball;
 import com.juego.objects.ChainWall;
 import com.juego.objects.Door;
@@ -77,7 +79,7 @@ public class GameActivity extends BaseActivity {
     public void onWindowFocusChanged(boolean hasFocus){
         super.onWindowFocusChanged(hasFocus);
         if(hasFocus){
-            /*if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 getWindow().getDecorView().setSystemUiVisibility(
                         View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -86,8 +88,10 @@ public class GameActivity extends BaseActivity {
                                 | View.SYSTEM_UI_FLAG_FULLSCREEN
                                 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                 );
-                screenWidth = getResources().getDisplayMetrics().widthPixels;
-            }*/
+                DisplayMetrics metrics = new DisplayMetrics();
+                getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
+                screenWidth = metrics.widthPixels;
+            }
         }
     }
 
@@ -298,6 +302,9 @@ public class GameActivity extends BaseActivity {
     @Override
     public void update(){
         if(gameState == GAME_STATE_RUNNING) {
+            if(frame == 0){
+                SoundManager.playSound(this, R.raw.kirby_hi);
+            }
             frame++;
 
             if (pushLag <= 0) {
@@ -386,7 +393,7 @@ public class GameActivity extends BaseActivity {
                         colorSwitches[door.getColor().ordinal()]);
             }
 
-            c.drawText("Health: " + lives, screenWidth - 100, 40, p);
+            c.drawText("Vida: " + lives, screenWidth - 100, 40, p);
 
             float density = getResources().getDisplayMetrics().density;
             p.setColor(Color.WHITE);
@@ -421,11 +428,17 @@ public class GameActivity extends BaseActivity {
 
     public void reduceLives(){
         lives--;
+        if(lives == 0){
+            SoundManager.playSound(this, R.raw.kirby_iieeeeeeee);
+        }else{
+            SoundManager.playSound(this, R.raw.kirby_aaaaahhhh);
+        }
     }
 
     private void win(){
         gameState = GAME_STATE_WON;
         pushLag = 2*ActivityThread.FPS;
+        SoundManager.playSound(this, R.raw.tu_tu_turu_turu_tu);
     }
 
     private void gameOver(){
