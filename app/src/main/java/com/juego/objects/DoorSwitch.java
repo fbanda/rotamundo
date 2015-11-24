@@ -20,25 +20,23 @@ public class DoorSwitch {
     private float x;
     private float y;
     private DoorColor color;
-    public boolean pressed;
 
     public DoorSwitch(float x, float y, DoorColor color) {
         this.x = x;
         this.y = y;
         this.color = color;
-        this.pressed = false;
     }
 
     public DoorColor getColor(){
         return color;
     }
 
-    public void draw(Res res, Canvas c, Paint p, float scale, float xOff, float yOff) {
-        c.drawBitmap(res.bitmap(getBitmap()), BaseActivity.screenWidth/2 + (x + xOff - SWITCH_DRAW_RADIUS)*scale,
+    public void draw(Res res, Canvas c, Paint p, float scale, float xOff, float yOff, boolean pressed) {
+        c.drawBitmap(res.bitmap(getBitmap(pressed)), BaseActivity.screenWidth/2 + (x + xOff - SWITCH_DRAW_RADIUS)*scale,
                 BaseActivity.screenHeight/2 + (y + yOff - SWITCH_DRAW_RADIUS)*scale, p);
     }
 
-    private int getBitmap(){
+    private int getBitmap(boolean pressed){
         switch(color){
             case RED:
                 return pressed ? R.drawable.switch_r_pressed : R.drawable.switch_r;
