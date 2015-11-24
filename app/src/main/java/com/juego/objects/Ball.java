@@ -32,7 +32,7 @@ public class Ball extends DrawableBody {
     public static final int FRAMES_TO_PUSH_BUTTON = 1;
 
     public static final float ROTATED_GRAVITY_IMPULSE = 22f / ActivityThread.FPS;
-    public static final float MAX_SPEED = 26f;
+    public static final float MAX_SPEED = 27.5f;
     public static final float BALL_DRAW_RADIUS = 3;
     public static final float BALL_COLLISION_RADIUS = 3;
 
