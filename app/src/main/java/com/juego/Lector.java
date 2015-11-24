@@ -21,7 +21,7 @@ public class Lector {
     ArrayList<Button> buttons;
     ArrayList<Spike> spikes;
     ArrayList<ForceField> fields;
-    ArrayList<Vec2> victoryRect;
+    public ArrayList<Vec2> victoryRect;
     float playerX;
     float playerY;
 
