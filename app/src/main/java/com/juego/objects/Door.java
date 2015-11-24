@@ -22,7 +22,6 @@ import org.jbox2d.dynamics.World;
  */
 public class Door extends DrawableBody {
 
-    public static long frame;
     public static final int FRAMES_TO_ANIMATE = 6;
 
     private DoorColor color;
@@ -49,8 +48,6 @@ public class Door extends DrawableBody {
         Vec2[] points3;
         switch(orientation) {
             case 0:
-            case 2:
-            default:
                 points1 = new Vec2[]{new Vec2(x, y), new Vec2(x + 3.4f, y),
                         new Vec2(x + 3.4f, y - 18.4f), new Vec2(x, y - 18.4f)};
                 points2 = new Vec2[]{new Vec2(x + 15f, y), new Vec2(x + 18.4f, y),
@@ -61,15 +58,34 @@ public class Door extends DrawableBody {
                 drawY = y - 18.4f;
                 break;
             case 1:
-                points1 = new Vec2[]{new Vec2(x, y), new Vec2(x + 9.2f, y),
-                        new Vec2(x + 9.2f, y + 1.7f), new Vec2(x, y + 1.7f)};
-                points2 = new Vec2[]{new Vec2(x, y + 7.5f), new Vec2(x + 9.2f, y + 7.5f),
-                        new Vec2(x + 9.2f, y + 9.2f), new Vec2(x, y + 9.2f)};
-                points3 = new Vec2[]{new Vec2(x, y + 1.7f), new Vec2(x + 9.2f, y + 1.7f),
-                        new Vec2(x + 9.2f, y + 7.5f), new Vec2(x, y + 7.5f)};
+                points1 = new Vec2[]{new Vec2(x, y), new Vec2(x + 18.4f, y),
+                        new Vec2(x + 18.4f, y + 3.4f), new Vec2(x, y + 3.4f)};
+                points2 = new Vec2[]{new Vec2(x, y + 15f), new Vec2(x + 18.4f, y + 15f),
+                        new Vec2(x + 18.4f, y + 18.4f), new Vec2(x, y + 18.4f)};
+                points3 = new Vec2[]{new Vec2(x, y + 3.4f), new Vec2(x + 13.2f, y + 3.4f),
+                        new Vec2(x + 13.2f, y + 15f), new Vec2(x, y + 15f)};
                 drawX = x;
                 drawY = y;
                 break;
+            case 2:
+                points1 = new Vec2[]{new Vec2(x, y), new Vec2(x, y + 18.4f),
+                        new Vec2(x - 3.4f, y + 18.4f), new Vec2(x - 3.4f, y)};
+                points2 = new Vec2[]{new Vec2(x - 15f, y), new Vec2(x - 15f, y + 18.4f),
+                        new Vec2(x - 18.4f, y + 18.4f), new Vec2(x - 18.4f, y)};
+                points3 = new Vec2[]{new Vec2(x - 3.4f, y), new Vec2(x - 3.4f, y + 13.2f),
+                        new Vec2(x - 15f, y + 13.2f), new Vec2(x - 15f, y)};
+                drawX = x - 18.4f;
+                drawY = y;
+                break;
+            default:
+                points1 = new Vec2[]{new Vec2(x, y), new Vec2(x - 18.4f, y),
+                        new Vec2(x - 18.4f, y - 3.4f), new Vec2(x, y - 3.4f)};
+                points2 = new Vec2[]{new Vec2(x, y - 15f), new Vec2(x - 18.4f, y - 15f),
+                        new Vec2(x - 18.4f, y - 18.4f), new Vec2(x, y - 18.4f)};
+                points3 = new Vec2[]{new Vec2(x, y - 3.4f), new Vec2(x - 13.f, y - 3.4f),
+                        new Vec2(x - 13.f, y - 15f), new Vec2(x, y - 15f)};
+                drawX = x - 18.4f;
+                drawY = y - 18.4f;
         }
 
         ChainShape chain1Shape = new ChainShape();
@@ -120,7 +136,7 @@ public class Door extends DrawableBody {
             case RED:
                 if(pressed){
                     id = R.drawable.door_r_open;
-                }else if(frame % (2*FRAMES_TO_ANIMATE) < FRAMES_TO_ANIMATE){
+                }else if(GameActivity.frame % (2*FRAMES_TO_ANIMATE) < FRAMES_TO_ANIMATE){
                     id = R.drawable.door_r_closed_1;
                 }else{
                     id = R.drawable.door_r_closed_2;
@@ -129,7 +145,7 @@ public class Door extends DrawableBody {
             case GREEN:
                 if(pressed){
                     id = R.drawable.door_g_open;
-                }else if(frame % (2*FRAMES_TO_ANIMATE) < FRAMES_TO_ANIMATE){
+                }else if(GameActivity.frame % (2*FRAMES_TO_ANIMATE) < FRAMES_TO_ANIMATE){
                     id = R.drawable.door_g_closed_1;
                 }else{
                     id = R.drawable.door_g_closed_2;
@@ -138,7 +154,7 @@ public class Door extends DrawableBody {
             case PURPLE:
                 if(pressed){
                     id = R.drawable.door_p_open;
-                }else if(frame % (2*FRAMES_TO_ANIMATE) < FRAMES_TO_ANIMATE){
+                }else if(GameActivity.frame % (2*FRAMES_TO_ANIMATE) < FRAMES_TO_ANIMATE){
                     id = R.drawable.door_p_closed_1;
                 }else{
                     id = R.drawable.door_p_closed_2;

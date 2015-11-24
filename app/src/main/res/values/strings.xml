@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Rotamundo</string>
+    <string name="win_message1">¡Has ganado!</string>
+    <string name="win_message2">Tu tiempo es de: %s</string>
+    <string name="lose_message">¡Has perdido!</string>
+    <string name="retry_message">Toca para reintentar</string>
 </resources>
