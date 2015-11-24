@@ -65,6 +65,7 @@ public class GameActivity extends BaseActivity {
     private float angleXOffset;
     private float angleYOffset;
 
+    public static final int MAX_LIVES = 10;
     private int lives;
 
     /* Rotar */
@@ -166,7 +167,7 @@ public class GameActivity extends BaseActivity {
         });
 
         sensorProvider = new GyroscopeManager((SensorManager)getSystemService(SENSOR_SERVICE));
-        lives = 3;
+        lives = MAX_LIVES;
 
         //Crear bitmaps rotados
         rotatedKirbys = generateKirbyBitmaps(NUM_ROTATED_IMAGES);
@@ -434,7 +435,7 @@ public class GameActivity extends BaseActivity {
     public void restartGame(){
         frame = 0;
 
-        lives = 3;
+        lives = MAX_LIVES;
         activateMines();
         resetDoorSwitches();
         ball.setPosition(new Vec2(lector.getPlayerX(), lector.getPlayerY()));
