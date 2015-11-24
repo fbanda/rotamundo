@@ -10,11 +10,13 @@ import android.os.Bundle;
 import com.juego.Lector;
 import com.juego.objects.Ball;
 import com.juego.objects.ChainWall;
+import com.juego.objects.Door;
 import com.juego.objects.DoorColor;
 import com.juego.objects.DoorSwitch;
 import com.juego.objects.Mine;
 import com.juego.objects.SpikeRow;
 import com.juego.objects.scanner.Button;
+import com.juego.objects.scanner.ForceField;
 import com.juego.objects.scanner.Spike;
 import com.juego.sensors.GyroscopeManager;
 
@@ -22,6 +24,8 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.World;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 
 public class GameActivity extends BaseActivity {
 
@@ -37,6 +41,7 @@ public class GameActivity extends BaseActivity {
     private int pushLag = 0;
     private boolean[] colorSwitches = new boolean[DoorColor.values().length];
     private ArrayList<DoorSwitch> doorSwitches;
+    private ArrayList<Door> doors;
 
     private Ball ball;
 
@@ -54,8 +59,9 @@ public class GameActivity extends BaseActivity {
     /* Rotar */
     private static final int NUM_ROTATED_IMAGES = 36;
     private ArrayList<Bitmap> rotatedKirbys;
+    public static HashMap<Integer, Bitmap[]> rotatedDoors;
 
-    public ArrayList<Bitmap> generateBitmaps (int number) {
+    public ArrayList<Bitmap> generateKirbyBitmaps(int number) {
         ArrayList<Bitmap> kirbys = new ArrayList<>();
         float angle = 360/number;
         float angle2 = angle;
@@ -75,6 +81,29 @@ public class GameActivity extends BaseActivity {
             angle2 = angle2 + angle;
         }
         return kirbys;
+    }
+
+    public HashMap<Integer, Bitmap[]> generateDoorBitmaps(int number){
+        HashMap<Integer, Bitmap[]> result = new HashMap<>();
+        addBitmaps(result, R.drawable.door_r_open);
+        addBitmaps(result, R.drawable.door_r_closed_1);
+        addBitmaps(result, R.drawable.door_r_closed_2);
+        addBitmaps(result, R.drawable.door_g_open);
+        addBitmaps(result, R.drawable.door_g_closed_1);
+        addBitmaps(result, R.drawable.door_g_closed_2);
+        addBitmaps(result, R.drawable.door_p_open);
+        addBitmaps(result, R.drawable.door_p_closed_1);
+        addBitmaps(result, R.drawable.door_p_closed_2);
+        return result;
+    }
+
+    public void addBitmaps(HashMap<Integer, Bitmap[]> result, int id){
+        Bitmap[] bitmaps = new Bitmap[4];
+        bitmaps[0] = res.bitmap(id);
+        bitmaps[1] = rotateBitmap(res.bitmap(id), 90);
+        bitmaps[2] = rotateBitmap(res.bitmap(id), 180);
+        bitmaps[3] = rotateBitmap(res.bitmap(id), 270);
+        result.put(id, bitmaps);
     }
 
     public static Bitmap rotateBitmap(Bitmap source, float angle)
@@ -97,7 +126,8 @@ public class GameActivity extends BaseActivity {
         lives = 3;
 
         //Crear bitmaps rotados
-        rotatedKirbys = generateBitmaps(NUM_ROTATED_IMAGES);
+        rotatedKirbys = generateKirbyBitmaps(NUM_ROTATED_IMAGES);
+        rotatedDoors = generateDoorBitmaps(4);
 
         //Inicializar el nivel
 
@@ -125,6 +155,10 @@ public class GameActivity extends BaseActivity {
         doorSwitches = new ArrayList<>();
         for(Button button : lector.getButtons()){
             doorSwitches.add(new DoorSwitch(button.x, button.y, DoorColor.fromChar(button.color)));
+        }
+        doors = new ArrayList<>();
+        for(ForceField forceField : lector.getForceFields()){
+            doors.add(new Door(forceField.x, forceField.y, forceField.orientation, DoorColor.fromChar(forceField.color)));
         }
 
         ball = new Ball(world, lector.getPlayerX(), lector.getPlayerY());
@@ -248,6 +282,10 @@ public class GameActivity extends BaseActivity {
 
         for(SpikeRow spikeRow : spikeRows) {
             spikeRow.draw(res, c, p, BaseActivity.getCombinedScale(), cameraXOffset + angleXOffset, cameraYOffset + angleYOffset);
+        }
+
+        for(Door door : doors){
+            door.draw(res, c, p, BaseActivity.getCombinedScale(), cameraXOffset + angleXOffset, cameraYOffset + angleYOffset);
         }
 
         c.drawText("Lives: " + lives, screenWidth-100, 40, p);
