@@ -1,12 +1,10 @@
 package com.juego.juego;
-
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-
 import com.juego.Lector;
 import com.juego.objects.Ball;
 import com.juego.objects.ChainWall;
@@ -32,6 +30,7 @@ public class GameActivity extends BaseActivity {
     private World world;
     private GyroscopeManager sensorProvider;
     private double lastAngle = -1;
+    private Lector lector;
 
     private ArrayList<ChainWall> walls;
     private ArrayList<Mine> mines;
@@ -131,7 +130,7 @@ public class GameActivity extends BaseActivity {
 
         //Inicializar el nivel
 
-        Lector lector = new Lector();
+        lector = new Lector();
         lector.Leer(getAssets(), "testVec2.txt");
 
         Vec2 gravity = new Vec2(0f, 0f);
@@ -166,14 +165,20 @@ public class GameActivity extends BaseActivity {
     }
 
     public void removeMine(Mine mine){
-        mines.remove(mine);
+        mine.invisible = true;
         mine.body.setActive(false);
     }
 
-    @Override
-    public void onRestart(){
-        super.onRestart();
-        ball.setPosition(new Vec2(15, 15));
+    public void activateMines(){
+        for(Mine mine : mines){
+            mine.invisible = false;
+            mine.body.setActive(true);
+        }
+    }
+
+    public void resetDoorSwitches(){
+        for(int i=0;i<colorSwitches.length;i++)
+            colorSwitches[i] = true;
     }
 
     @Override
@@ -214,18 +219,12 @@ public class GameActivity extends BaseActivity {
     public void pushSwitch(DoorColor color){
         int i = color.ordinal();
         colorSwitches[i] = !colorSwitches[i];
-        for(DoorSwitch doorSwitch : doorSwitches){
-            if(doorSwitch.getColor().equals(color)){
-                doorSwitch.pressed = colorSwitches[i];
-            }
-        }
     }
 
     @Override
     public void update(){
         if(pushLag <= 0) {
             if (sensorProvider.pushedButton()) {
-                sensorProvider.resetButtonState();
                 DoorSwitch pressedSwitch = ball.isOnTopOfSwitch(doorSwitches);
                 if (pressedSwitch != null) {
                     pushSwitch(pressedSwitch.getColor());
@@ -235,11 +234,20 @@ public class GameActivity extends BaseActivity {
         }else{
             pushLag--;
         }
+        sensorProvider.resetButtonState();
 
         double screenAngle = sensorProvider.getScreenAngle();
         updateAngle(screenAngle);
         ball.update(lastAngle);
+        if(lives==0){
+            gameOver();
+            return;
+        }
+
         world.step(1f / ActivityThread.FPS, 6, 2);
+        if(checkVictoryCondition()){
+            restartGame();
+        }
 
         Vec2 position = ball.getPosition();
         cameraXOffset = -position.x;
@@ -262,7 +270,8 @@ public class GameActivity extends BaseActivity {
         index = index % NUM_ROTATED_IMAGES;
 
         for(DoorSwitch doorSwitch : doorSwitches){
-            doorSwitch.draw(res, c, p, BaseActivity.getCombinedScale(), cameraXOffset + angleXOffset, cameraYOffset + angleYOffset);
+            doorSwitch.draw(res, c, p, BaseActivity.getCombinedScale(), cameraXOffset + angleXOffset, cameraYOffset + angleYOffset,
+                    colorSwitches[doorSwitch.getColor().ordinal()]);
         }
 
         p.setColor(ChainWall.WALL_COLOR);
@@ -293,13 +302,21 @@ public class GameActivity extends BaseActivity {
 
     public void reduceLives(){
         lives--;
-        if(lives==0){
-            gameOver();
-        }
     }
 
     private void gameOver(){
-        //TODO
+        restartGame();
+    }
+
+    public void restartGame(){
+        lives = 3;
+        activateMines();
+        resetDoorSwitches();
+        ball.setPosition( new Vec2(lector.getPlayerX(), lector.getPlayerY()));
+    }
+
+    private boolean checkVictoryCondition(){
+        return false;
     }
 
 }

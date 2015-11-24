@@ -17,7 +17,10 @@ spike 60,22 68.2,58 1
 
 !Las puertas tienen una posición y una orientación. Desde el punto, se va hacia arriba-derecha (0), hacia abajo-derecha (1),
 !hacia abajo-izquierda (2) o hacia arriba-izquierda (3)
-field 80,80 0
+field 80,80 0 R
 
 !La posición del jugador solo debe ser especificada una vez, como x,y
 player 90,90
+
+!El rectángulo de victoria
+victory 0,0 6,6

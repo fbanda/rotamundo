@@ -6,11 +6,13 @@ package com.juego.objects.scanner;
 public class ForceField {
     public float x;
     public float y;
+    public char color;
     public int orientation;
 
-    public ForceField(float x, float y, int orientation){
+    public ForceField(float x, float y, int orientation, char color){
         this.x = x;
         this.y = y;
         this.orientation = orientation;
+        this.color = color;
     }
 }
